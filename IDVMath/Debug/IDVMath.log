@@ -1,0 +1,2 @@
+﻿  IDVMath.cpp
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\idvmath\src\idvmath.cpp(1): fatal error C1083: No se puede abrir el archivo incluir: 'IDVMath.h': No such file or directory
