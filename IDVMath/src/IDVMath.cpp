@@ -1,6 +1,5 @@
 #include <IDVMath.h>
 #include <iostream>
-
 void PrintMatrix(const XMATRIX44& Matrix)
 {
 	std::cout << "( " << Matrix.m11 << ", " << Matrix.m12 << ", " << Matrix.m13 << ", " << Matrix.m14 << ")" << std::endl;
@@ -886,5 +885,20 @@ bool XMATRIX44::operator != (const XMATRIX44& other) const
 float Minimum(float a, float b)
 {
 	return !(b < a) ? a : b;
+}
+float XVEC2Angle(XVECTOR2 vector)
+{
+	return atan(vector.y / vector.x);
+}
+float RandomRange(float fmin, float fmax, float seed)
+{
+	srand(seed);
+	float r = (float)rand() / (float)RAND_MAX;
+	return fmin + r * (fmax - fmin);
+}
+float RandomGet(float seed)
+{
+	srand(seed);
+	return rand();
 }
 

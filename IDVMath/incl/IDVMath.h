@@ -11,7 +11,7 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
-
+#include <random>
 
 #ifndef DOUBLE_FOR_INVERSE
 #define DOUBLE_FOR_INVERSE 1
@@ -469,6 +469,10 @@ struct XQUATERNION {
 
 float Minimum(float a, float b);
 
+float XVEC2Angle(XVECTOR2 vector);
+
+float RandomRange(float fmin, float fmax, float seed);
+float RandomGet(float seed);
 
 #endif
 
