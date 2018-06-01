@@ -1,23 +1,33 @@
 #pragma once
 #include <IDVMath.h>
-class Boid2D
+#include "GameObject.h"
+class Boid2D : GameObject
 {
 private:
 	std::vector<Boid2D> totalAgents;
+	std::vector<GameObject> totalObstacles;
 	float fAgentNeighborRadius;
+	int ID;
 public:
-	XVECTOR2 vPosition, vFront, vRight, vVelocity;
-	float fMagnitude, fInnerRadio, fOuterRadio;
+	XVECTOR2 
+		vFront, vRight, vVelocity, vWander;
+	float
+		fMagnitude, 
+		fInnerRadio, fOuterRadio, fRadio, 
+		fPushForce, 
+		avoidTime = 5.0f, pursueTime = 5.0f, wanderTime = 0.0f;
 public:
-	Boid2D();
-	Boid2D(float x, float y, float iradio, float oradio, float mag);
+	Boid2D(std::string t);
+	Boid2D(std::string t, float x, float y, float iradio, float oradio, float mag);
 	~Boid2D();
 	void SetRight();
+	void SetID(int id);
+	void Update();
 	XVECTOR2
 		Flee(XVECTOR2 vObjective),
 		Seek(XVECTOR2 vObjective),
-		Avoid(XVECTOR2 vObjective, XVECTOR2 vObjectiveDirection, XVECTOR2 vObjectiveVelocity, float fTimeOffset),
-		Pursue(XVECTOR2 vObjective, XVECTOR2 vObjectiveDirection, XVECTOR2 vObjectiveVelocity, float fTimeOffset),
+		Avoid(XVECTOR2 vObjective, XVECTOR2 vObjectiveDirection, XVECTOR2 vObjectiveVelocity),
+		Pursue(XVECTOR2 vObjective, XVECTOR2 vObjectiveDirection, XVECTOR2 vObjectiveVelocity),
 		Arrive(XVECTOR2 vObjective),
 		Leave(XVECTOR2 vObjective),
 		Wander(XVECTOR2 vObjective, float fVisionAngle),
@@ -25,133 +35,165 @@ public:
 		Cohesion(),
 		Direction(),
 		Distance(),
-		ObstacleAvoidance();
-
+		ObstacleAvoidance(),
+		CheckBoundaries(XVECTOR2 side, XVECTOR2 vecToObstacle, XVECTOR2 obsPosition, XVECTOR2 corner, float dotfactor, float boundary);
 };
-Boid2D::Boid2D()
-{
 
-}
-Boid2D::Boid2D(float x, float y,float iradio,float oradio,float mag)
+Boid2D::Boid2D(std::string t)
 {
-	vPosition.x = x;
-	vPosition.y = y;
+	//the agent should be added to the total agents vector in the scene
+	m_tag = t;
+}
+
+Boid2D::Boid2D(std::string t, float x, float y,float iradio,float oradio,float mag)
+{
+	m_tag = t;
+	m_position2d.x = x;
+	m_position2d.y = y;
 	fMagnitude = mag;
 	fInnerRadio = iradio;
 	fOuterRadio = oradio;
-	vRight.x = +vPosition.y;
-	vRight.y = -vPosition.x;
+	vRight.x = +m_position2d.y;
+	vRight.y = -m_position2d.x;
+	fPushForce = 100;
 }
+
 Boid2D::~Boid2D()
 {
+	totalObstacles.clear();
+	totalAgents.clear();
 
 }
 void Boid2D::SetRight()
 {
-	vRight.x = +vPosition.y;
-	vRight.y = -vPosition.x;
+	vRight.x = +m_position2d.y;
+	vRight.y = -m_position2d.x;
+	vRight.Normalize();
+}
+void Boid2D::Update()
+{
+	vVelocity;
 }
 XVECTOR2 Boid2D::Seek(XVECTOR2 vObjective)
 {
-	XVECTOR2 vForce = vObjective - vPosition;
+	XVECTOR2 vForce = vObjective - m_position2d;
 	vForce.Normalize();
 	vForce *= fMagnitude;
 	return vForce;
 
 }
+
 XVECTOR2 Boid2D::Flee(XVECTOR2 vObjective)
 {
-	XVECTOR2 vForce = vPosition - vObjective;
+	XVECTOR2 vForce = m_position2d - vObjective;
 	vForce.Normalize();
 	vForce *= fMagnitude;
 	return vForce;
 }
-XVECTOR2 Boid2D::Avoid(XVECTOR2 vObjective, XVECTOR2 vObjectiveDirection, XVECTOR2 vObjectiveVelocity, float fTimeOffset)
+
+XVECTOR2 Boid2D::Avoid(XVECTOR2 vObjective, XVECTOR2 vObjectiveDirection, XVECTOR2 vObjectiveVelocity)
 {
-	float fObjectiveAngle = XVEC2Angle(vObjective);
-	XVECTOR2 vPredictPosition = vObjective + vObjectiveVelocity * fTimeOffset;
-	while ((vPosition - vObjective).Length() <= vPredictPosition.Length())
+	XVECTOR2 vPredictPosition = vObjective + vObjectiveVelocity * avoidTime;
+	if ((m_position2d - vObjective).Length() <= vPredictPosition.Length())
 	{
-		fTimeOffset--;
-		XVECTOR2 vPredictPosition = vObjective + vObjectiveVelocity * fTimeOffset;
+		avoidTime = (m_position2d - vObjective).Length();
+		vPredictPosition = vObjective + vObjectiveVelocity * avoidTime;
 	}
+	else avoidTime = 5.0f;
 	return Leave(vPredictPosition);
 }
-XVECTOR2 Boid2D::Pursue(XVECTOR2 vObjective, XVECTOR2 vObjectiveDirection, XVECTOR2 vObjectiveVelocity, float fTimeOffset)
+
+XVECTOR2 Boid2D::Pursue(XVECTOR2 vObjective, XVECTOR2 vObjectiveDirection, XVECTOR2 vObjectiveVelocity)
 {
-	float fObjectiveAngle = XVEC2Angle(vObjective);
-	XVECTOR2 vPredictPosition = vObjective + vObjectiveVelocity * fTimeOffset;
-	while ((vPosition - vObjective).Length() <= vPredictPosition.Length())
+	XVECTOR2 vPredictPosition = vObjective + (vObjectiveVelocity * pursueTime);
+	if ((m_position2d - vObjective).Length() <= vPredictPosition.Length())
 	{
-		fTimeOffset--;
-		XVECTOR2 vPredictPosition = vObjective + vObjectiveVelocity * fTimeOffset;
+		pursueTime = (m_position2d - vObjective).Length();
+		vPredictPosition = vObjective + (vObjectiveVelocity * pursueTime);
 	}
+	else pursueTime = 5.0f;
 	return Seek(vPredictPosition);
 }
+
 XVECTOR2 Boid2D::Arrive(XVECTOR2 vObjective)
 {
 	XVECTOR2 vForce = Seek(vObjective);
 	float scale = 0.0f;
-	float distance = (vObjective - vPosition).Length();
+	float distance = (vObjective - m_position2d).Length();
 	scale = Minimum((distance / fInnerRadio), 1.0f);
 	return vForce*scale;
 }
+
 XVECTOR2 Boid2D::Leave(XVECTOR2 vObjective)
 {
 	XVECTOR2 vForce = Flee(vObjective);
 	float scale = 1.0f;
-	if ((vPosition - vObjective).Length() >= fInnerRadio)
+	if ((m_position2d - vObjective).Length() >= fInnerRadio)
 	{
-		float distance = (vObjective - vPosition).Length() - fInnerRadio;
+		float distance = (vObjective - m_position2d).Length() - fInnerRadio;
 		distance = fOuterRadio - distance;
 		scale = Minimum((distance / fOuterRadio), 1.0f);
 		if (scale <= .001f)
 			scale = 0;
 	}
+	return vForce * scale;
 }
+
 XVECTOR2 Boid2D::Wander(XVECTOR2 vObjective, float fVisionAngle)
 {
-	float fCircleOffset = 10;
+	float fCircleOffset = 10.0f;
+	fVisionAngle = 0.5f;
 	//The angle of difference between our front and world axis
-	float fObjectAngle = XVEC2Angle(vPosition);
+	float fWorldAngle = XVEC2Angle(m_position2d);
 	//The center of our projected circle. Is in front of the object
-	XVECTOR2 vCircleCenter = { (cos(fObjectAngle)*fCircleOffset) + vPosition.x,(sin(fObjectAngle)*fCircleOffset) + vPosition.y };
-	float fRandomAngle = RandomRange(fObjectAngle - (fVisionAngle / 2.0f), fObjectAngle + (fVisionAngle / 2.0f), 1234.0f);
-	XVECTOR2 vRandomObjective = { cos(fRandomAngle),sin(fRandomAngle) };
+	XVECTOR2 vCircleCenter =
+	{ cos(fWorldAngle)*fCircleOffset, sin(fWorldAngle)*fCircleOffset };
+	vCircleCenter += m_position2d;
+	//Create a random angle between the world angle += vision
+	float fRandomAngle = RandomRange(fWorldAngle - fVisionAngle, fWorldAngle + fVisionAngle, 1234.0f);
+	//Creates the final point taking the circle center in front of us
+	XVECTOR2 vRandomObjective =
+	{ cos(fRandomAngle)*2.0f, sin(fRandomAngle)*2.0f };
+	vRandomObjective += vCircleCenter;
 	return Seek(vRandomObjective);
 }
+
 XVECTOR2 Boid2D::Flock()
 {
-	XVECTOR2 vFlock = Cohesion() + Direction() + Distance();
-	return vFlock;
+	return  (Cohesion() + Direction() + Distance()).normalized()*fMagnitude;
 }
+
 XVECTOR2 Boid2D::Cohesion()
 {
-	XVECTOR2 vGeneralPosition,vToCenter;
+	GetList(totalAgents);
+	XVECTOR2 vGeneralPosition = { 0,0 }, vToCenter = { 0,0 };
 	int iNeighborAgents = 0;
 	for each(Boid2D agent in totalAgents)
 	{
-		if ((agent.vPosition - vPosition).Length() != 0 && (agent.vPosition - vPosition).Length() < fAgentNeighborRadius)
+		if ((agent.m_position2d - m_position2d).Length() != 0 && 
+			(agent.m_position2d - m_position2d).Length() < fAgentNeighborRadius)
 		{
-			vGeneralPosition += agent.vPosition;
+			vGeneralPosition += agent.m_position2d;
 			++iNeighborAgents;
 		}
 	}
 	if (iNeighborAgents != 0)
 	{
 		vGeneralPosition /= iNeighborAgents;
-		vToCenter = { vGeneralPosition - vPosition };
+		vToCenter = { vGeneralPosition - m_position2d };
 		vToCenter.Normalize();
 	}
 	return vToCenter;
 }
+
 XVECTOR2 Boid2D::Direction()
 {
-	XVECTOR2 vGeneralDirection;
+	GetList(totalAgents);
+	XVECTOR2 vGeneralDirection = { 0,0 };
 	int iNeighborAgents = 0;
 	for each(Boid2D agent in totalAgents)
 	{
-		if ((agent.vPosition - vPosition).Length() != 0 && (agent.vPosition - vPosition).Length() < fAgentNeighborRadius)
+		if ((agent.m_position2d - m_position2d).Length() != 0 && (agent.m_position2d - m_position2d).Length() < fAgentNeighborRadius)
 		{
 			vGeneralDirection += agent.vFront;
 			++iNeighborAgents;
@@ -161,18 +203,22 @@ XVECTOR2 Boid2D::Direction()
 	{
 		vGeneralDirection /= iNeighborAgents;
 		vGeneralDirection.Normalize();
+		vGeneralDirection *= fMagnitude;
 	}
 	return vGeneralDirection;
 }
+
 XVECTOR2 Boid2D::Distance()
 {
+	GetList(totalAgents);
 	int iNeighborAgents = 0;
-	XVECTOR2 vGeneralAvoidance;
+	XVECTOR2 vGeneralAvoidance = { 0,0 };
 	for each(Boid2D agent in totalAgents)
 	{
-		if ((agent.vPosition - vPosition).Length() != 0 && (agent.vPosition - vPosition).Length() < fAgentNeighborRadius)
+		if ((agent.m_position2d - m_position2d).Length() != 0 && 
+			(agent.m_position2d - m_position2d).Length() < fAgentNeighborRadius)
 		{
-			vGeneralAvoidance += (agent.vPosition - vPosition);
+			vGeneralAvoidance += (agent.m_position2d - m_position2d);
 			++iNeighborAgents;
 		}
 	}
@@ -181,13 +227,73 @@ XVECTOR2 Boid2D::Distance()
 		vGeneralAvoidance /= iNeighborAgents;
 		vGeneralAvoidance *= -1;
 		vGeneralAvoidance.Normalize();
+		vGeneralAvoidance *= fMagnitude*2.0f;
 	}
 	return vGeneralAvoidance;
 }
+
 XVECTOR2 Boid2D::ObstacleAvoidance()
 {
-	//Define the boundaries of our BoxCollider
-	float fLeftNear, fLeftFar, fRightNear, fRightFar;
+	GetList(totalObstacles);
+	float fFrontOffset = 5.0f, fBackOffset = fRadio;
+	//Boundaries of our BoxCollider
+	XVECTOR2 fLeftNear, fLeftFar, fRightNear, fRightFar;
+	XVECTOR2 vBackForce;
+	//Define the positions
+	fLeftFar	= m_position2d	+ vFront*fFrontOffset	- vRight;
+	fRightFar	= m_position2d	+ vFront*fFrontOffset	+ vRight;
+	fLeftNear	= m_position2d	- vFront*fBackOffset	- vRight;
+	fRightNear	= m_position2d	- vFront*fBackOffset	+ vRight;
+	//Define the VectorBox
+	XVECTOR2 vA, vB, vC, vD;
+	vA = fRightFar - fLeftFar;
+	vB = fLeftFar - fLeftNear;
+	vC = fLeftNear - fRightNear;
+	vD = fRightNear - fRightFar;
+	//Make a dot product to see if an object is inside the boundaries
+	for each(GameObject obstacle in totalObstacles)
+	{
+		if ((m_position2d - obstacle.m_position2d).Length() <= 10)
+		{
+			XVECTOR2 A, B, C, D;
+			float fa, fb, fc, fd, obs_bounds= obstacle.boundary;
+			A = obstacle.m_position2d - fLeftFar;
+			B = obstacle.m_position2d - fLeftNear;
+			C = obstacle.m_position2d - fRightNear;
+			D = obstacle.m_position2d - fRightFar;
+			fa = XVEC2Dot(A, vA) / (vA.Length()  * vA.Length());
+			fb = XVEC2Dot(B, vB) / (vB.Length()  * vB.Length());
+			fc = XVEC2Dot(C, vC) / (vC.Length()  * vC.Length());
+			fd = XVEC2Dot(D, vD) / (vD.Length()  * vD.Length());
+			vBackForce += CheckBoundaries(vA, A, obstacle.m_position2d, fLeftFar, fa, obs_bounds);
+			vBackForce += CheckBoundaries(vB, B, obstacle.m_position2d, fLeftNear, fb, obs_bounds);
+			vBackForce += CheckBoundaries(vC, C, obstacle.m_position2d, fRightNear, fc, obs_bounds);
+			vBackForce += CheckBoundaries(vD, D, obstacle.m_position2d, fRightFar, fd, obs_bounds);
+		}
+		
+	}
+	return vBackForce;
 
-	return XVECTOR2() = {};
+}
+void Boid2D::SetID(int id)
+{
+	ID = id;
+}
+XVECTOR2 Boid2D::CheckBoundaries(XVECTOR2 side, XVECTOR2 vecToObstacle, XVECTOR2 obsPosition, XVECTOR2 corner, float dotfactor, float boundary)
+{
+	XVECTOR2 result = { 0,0 };
+	if (dotfactor > 0 && dotfactor < 1)
+	{
+		XVECTOR2 reason = side * dotfactor;
+		XVECTOR2 backforce = reason - vecToObstacle;
+		//Now we check via heuristics if we are accepting the object is inside our vector box
+		if (backforce.Length() <= (boundary) / 2)
+		{
+			//Object is in fact inside our box
+			backforce.Normalize();
+			//That 4 is just heuristics that worked in unity, might be different in OpenGL
+			result = backforce * fMagnitude * 4;
+		}
+	}
+	return result;
 }

@@ -458,6 +458,10 @@ void XVecDot(float & Dot, const XVECTOR3 & FirstV, const XVECTOR3 & SecondV)
 {
 	Dot = (FirstV.x * SecondV.x) + (FirstV.y * SecondV.y) + (FirstV.z * SecondV.z);
 }
+float XVEC2Dot(const XVECTOR2 & vFirst, const XVECTOR2 & vSecond)
+{
+	return (vFirst.x * vSecond.x) + (vFirst.y * vSecond.y);
+}
 void XVecLength(float & Lenght, const XVECTOR3 &v)
 {
 	Lenght = sqrt((v.x* v.x) + (v.y*v.y) + (v.z*v.z));
@@ -538,6 +542,14 @@ bool XVECTOR2::operator != (const XVECTOR2& other) const
 {
 	if (this->x != other.x&&this->y != other.y) return true;
 	return false;
+}
+XVECTOR2 XVECTOR2::normalized()
+{
+	XVECTOR2 norm;
+	float v = sqrt((this->x * this->x) + (this->y * this->y)); 
+	norm.x = this->x / v;
+	norm.y = this->y / v;
+	return norm;
 }
 void XVECTOR2::Normalize()
 {
@@ -893,8 +905,9 @@ float XVEC2Angle(XVECTOR2 vector)
 float RandomRange(float fmin, float fmax, float seed)
 {
 	srand(seed);
-	float r = (float)rand() / (float)RAND_MAX;
-	return fmin + r * (fmax - fmin);
+	float difference(fmax - fmin);
+	float r = std::fmod(r, difference);
+	return r + fmin;
 }
 float RandomGet(float seed)
 {

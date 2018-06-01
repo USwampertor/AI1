@@ -187,6 +187,7 @@ void XVecTransformRH(XVECTOR3 &, const XVECTOR3 &, const XMATRIX44 &);
 void XVecTransformNormalRH(XVECTOR3 &, const XVECTOR3 &, const XMATRIX44 &);
 
 void XVecDot(float &, const XVECTOR3 &, const XVECTOR3 &);
+float XVEC2Dot(const XVECTOR2 &, const XVECTOR2 &);
 void XVecLength(float &, const XVECTOR3 &v);
 void XVecCross(XVECTOR3 &, const XVECTOR3 &, const XVECTOR3 &);
 void XVec3Normalize(XVECTOR3 &, const XVECTOR3 &);
@@ -225,7 +226,7 @@ struct XVECTOR2 {
 	XVECTOR2 operator - (const XVECTOR2&) const;
 	XVECTOR2 operator * (float) const;
 	XVECTOR2 operator / (float) const;
-
+	XVECTOR2 normalized();
 	bool operator == (const XVECTOR2&) const;
 	bool operator != (const XVECTOR2&) const;
 
