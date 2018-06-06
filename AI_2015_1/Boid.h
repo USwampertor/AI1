@@ -23,6 +23,7 @@ public:
 	void SetRight();
 	void SetID(int id);
 	void Update();
+	void GetBox(std::vector<XVECTOR2> b, std::vector<XVECTOR2> c);
 	XVECTOR2
 		Flee(XVECTOR2 vObjective),
 		Seek(XVECTOR2 vObjective),
@@ -36,6 +37,7 @@ public:
 		Direction(),
 		Distance(),
 		ObstacleAvoidance(),
+		SurroundEnemies(XVECTOR2 objPos, float radius),
 		CheckBoundaries(XVECTOR2 side, XVECTOR2 vecToObstacle, XVECTOR2 obsPosition, XVECTOR2 corner, float dotfactor, float boundary);
 };
 
@@ -231,44 +233,60 @@ XVECTOR2 Boid2D::Distance()
 	}
 	return vGeneralAvoidance;
 }
-
-XVECTOR2 Boid2D::ObstacleAvoidance()
+void Boid2D::GetBox(std::vector<XVECTOR2> b, std::vector<XVECTOR2> c)
 {
-	GetList(totalObstacles);
-	float fFrontOffset = 5.0f, fBackOffset = fRadio;
+	float fFrontOffset = 5.0f, fBackOffset = boundary;
 	//Boundaries of our BoxCollider
 	XVECTOR2 fLeftNear, fLeftFar, fRightNear, fRightFar;
-	XVECTOR2 vBackForce;
-	//Define the positions
-	fLeftFar	= m_position2d	+ vFront*fFrontOffset	- vRight;
-	fRightFar	= m_position2d	+ vFront*fFrontOffset	+ vRight;
-	fLeftNear	= m_position2d	- vFront*fBackOffset	- vRight;
-	fRightNear	= m_position2d	- vFront*fBackOffset	+ vRight;
+	fLeftFar = m_position2d + vFront*fFrontOffset - vRight;
+	fRightFar = m_position2d + vFront*fFrontOffset + vRight;
+	fLeftNear = m_position2d - vFront*fBackOffset - vRight;
+	fRightNear = m_position2d - vFront*fBackOffset + vRight;
 	//Define the VectorBox
 	XVECTOR2 vA, vB, vC, vD;
 	vA = fRightFar - fLeftFar;
 	vB = fLeftFar - fLeftNear;
 	vC = fLeftNear - fRightNear;
 	vD = fRightNear - fRightFar;
+	b.push_back(vA); b.push_back(vB); b.push_back(vC); b.push_back(vD);
+	c.push_back(fLeftFar); c.push_back(fLeftNear); c.push_back(fRightNear); c.push_back(fRightFar);
 	//Make a dot product to see if an object is inside the boundaries
+}
+XVECTOR2 Boid2D::ObstacleAvoidance()
+{
+	GetList(totalObstacles);
+	std::vector<XVECTOR2> Box;
+	std::vector<XVECTOR2> Corners;
+	GetBox(Box, Corners);
+	
+	XVECTOR2 vBackForce;
+	//Define the positions
+	
 	for each(GameObject obstacle in totalObstacles)
 	{
 		if ((m_position2d - obstacle.m_position2d).Length() <= 10)
 		{
-			XVECTOR2 A, B, C, D;
-			float fa, fb, fc, fd, obs_bounds= obstacle.boundary;
-			A = obstacle.m_position2d - fLeftFar;
-			B = obstacle.m_position2d - fLeftNear;
-			C = obstacle.m_position2d - fRightNear;
-			D = obstacle.m_position2d - fRightFar;
-			fa = XVEC2Dot(A, vA) / (vA.Length()  * vA.Length());
-			fb = XVEC2Dot(B, vB) / (vB.Length()  * vB.Length());
-			fc = XVEC2Dot(C, vC) / (vC.Length()  * vC.Length());
-			fd = XVEC2Dot(D, vD) / (vD.Length()  * vD.Length());
-			vBackForce += CheckBoundaries(vA, A, obstacle.m_position2d, fLeftFar, fa, obs_bounds);
-			vBackForce += CheckBoundaries(vB, B, obstacle.m_position2d, fLeftNear, fb, obs_bounds);
-			vBackForce += CheckBoundaries(vC, C, obstacle.m_position2d, fRightNear, fc, obs_bounds);
-			vBackForce += CheckBoundaries(vD, D, obstacle.m_position2d, fRightFar, fd, obs_bounds);
+			//XVECTOR2 A, B, C, D;
+			//float fa, fb, fc, fd;
+			float obs_bounds= obstacle.boundary;
+			for (int i = 0; i < 4; ++i)
+			{
+				XVECTOR2 shoot = obstacle.m_position2d - Corners[i];
+				float dot = XVEC2Dot(shoot, Box[i]) / (Box[i].Length()  * Box[i].Length());
+				vBackForce += CheckBoundaries(Box[i], shoot, obstacle.m_position2d, Box[i], dot, obs_bounds);
+			}
+			//A = obstacle.m_position2d - fLeftFar;
+			//B = obstacle.m_position2d - fLeftNear;
+			//C = obstacle.m_position2d - fRightNear;
+			//D = obstacle.m_position2d - fRightFar;
+			//fa = XVEC2Dot(A, vA) / (vA.Length()  * vA.Length());
+			//fb = XVEC2Dot(B, vB) / (vB.Length()  * vB.Length());
+			//fc = XVEC2Dot(C, vC) / (vC.Length()  * vC.Length());
+			//fd = XVEC2Dot(D, vD) / (vD.Length()  * vD.Length());
+			//vBackForce += CheckBoundaries(vA, A, obstacle.m_position2d, fLeftFar, fa, obs_bounds);
+			//vBackForce += CheckBoundaries(vB, B, obstacle.m_position2d, fLeftNear, fb, obs_bounds);
+			//vBackForce += CheckBoundaries(vC, C, obstacle.m_position2d, fRightNear, fc, obs_bounds);
+			//vBackForce += CheckBoundaries(vD, D, obstacle.m_position2d, fRightFar, fd, obs_bounds);
 		}
 		
 	}
@@ -296,4 +314,32 @@ XVECTOR2 Boid2D::CheckBoundaries(XVECTOR2 side, XVECTOR2 vecToObstacle, XVECTOR2
 		}
 	}
 	return result;
+}
+XVECTOR2 Boid2D::SurroundEnemies(XVECTOR2 objPos, float radius)
+{
+	XVECTOR2 vForce = {0,0};
+	GetList(totalAgents);
+	XVECTOR2 vV = m_position2d - objPos;
+	XVECTOR2 vW = vV.normalized() * 10.0f;
+	XVECTOR2 vPoint = vW - vV + m_position2d;
+	vForce += Arrive(vPoint);
+
+	for each(Boid2D agent in totalAgents)
+	{
+		XVECTOR2 difference = (agent.m_position2d - m_position2d);
+		if (difference.Length() != 0 &&
+			difference.Length() <= 3.0f)
+		{
+			XVECTOR2 frontPoint = m_position2d + (vFront * 3.0f);
+			XVECTOR2 front = frontPoint - m_position2d;
+
+			if ((XVEC2Dot(difference, front) / (front.Length()*front.Length())) > .25f &&
+				(XVEC2Dot(difference, front) / (front.Length()*front.Length())) < 2.0f)
+			{
+				vForce += /*Quaternion.AngleAxis(innervalue*90.0f, transform.up) **/ Leave(vPoint) * 2;
+			}
+		}
+	}
+	if ((vPoint - m_position2d).Length() <= .5f) return XVECTOR2{0,0};
+	return vForce;
 }
