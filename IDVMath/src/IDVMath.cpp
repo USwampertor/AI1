@@ -906,12 +906,13 @@ float RandomRange(float fmin, float fmax, float seed)
 {
 	srand(seed);
 	float difference(fmax - fmin);
-	float r = std::fmod(r, difference);
+	float r = 0.0f;
+	r = std::fmod(r, difference);
 	return r + fmin;
 }
 float RandomGet(float seed)
 {
 	srand(seed);
-	return rand();
+	return (float)rand();
 }
 

@@ -1,11 +1,10 @@
 #pragma once
-#include <IDVMath.h>
 #include "GameObject.h"
-class Boid2D : GameObject
+class Boid2D : public GameObject
 {
 private:
-	std::vector<Boid2D> totalAgents;
-	std::vector<GameObject> totalObstacles;
+	std::vector<Boid2D*> totalAgents;
+	std::vector<GameObject*> totalObstacles;
 	float fAgentNeighborRadius;
 	int ID;
 public:
@@ -17,6 +16,7 @@ public:
 		fPushForce, 
 		avoidTime = 5.0f, pursueTime = 5.0f, wanderTime = 0.0f;
 public:
+	Boid2D();
 	Boid2D(std::string t);
 	Boid2D(std::string t, float x, float y, float iradio, float oradio, float mag);
 	~Boid2D();
@@ -40,7 +40,10 @@ public:
 		SurroundEnemies(XVECTOR2 objPos, float radius),
 		CheckBoundaries(XVECTOR2 side, XVECTOR2 vecToObstacle, XVECTOR2 obsPosition, XVECTOR2 corner, float dotfactor, float boundary);
 };
-
+Boid2D::Boid2D()
+{
+	//Fuck off will ya?
+}
 Boid2D::Boid2D(std::string t)
 {
 	//the agent should be added to the total agents vector in the scene
@@ -170,12 +173,12 @@ XVECTOR2 Boid2D::Cohesion()
 	GetList(totalAgents);
 	XVECTOR2 vGeneralPosition = { 0,0 }, vToCenter = { 0,0 };
 	int iNeighborAgents = 0;
-	for each(Boid2D agent in totalAgents)
+	for each(Boid2D* agent in totalAgents)
 	{
-		if ((agent.m_position2d - m_position2d).Length() != 0 && 
-			(agent.m_position2d - m_position2d).Length() < fAgentNeighborRadius)
+		if ((agent->m_position2d - m_position2d).Length() != 0 && 
+			(agent->m_position2d - m_position2d).Length() < fAgentNeighborRadius)
 		{
-			vGeneralPosition += agent.m_position2d;
+			vGeneralPosition += agent->m_position2d;
 			++iNeighborAgents;
 		}
 	}
@@ -193,11 +196,13 @@ XVECTOR2 Boid2D::Direction()
 	GetList(totalAgents);
 	XVECTOR2 vGeneralDirection = { 0,0 };
 	int iNeighborAgents = 0;
-	for each(Boid2D agent in totalAgents)
+	for each(Boid2D* agent in totalAgents)
 	{
-		if ((agent.m_position2d - m_position2d).Length() != 0 && (agent.m_position2d - m_position2d).Length() < fAgentNeighborRadius)
+		if (
+			(agent->m_position2d - m_position2d).Length() != 0 && 
+			(agent->m_position2d - m_position2d).Length() < fAgentNeighborRadius)
 		{
-			vGeneralDirection += agent.vFront;
+			vGeneralDirection += agent->vFront;
 			++iNeighborAgents;
 		}
 	}
@@ -215,12 +220,12 @@ XVECTOR2 Boid2D::Distance()
 	GetList(totalAgents);
 	int iNeighborAgents = 0;
 	XVECTOR2 vGeneralAvoidance = { 0,0 };
-	for each(Boid2D agent in totalAgents)
+	for each(Boid2D* agent in totalAgents)
 	{
-		if ((agent.m_position2d - m_position2d).Length() != 0 && 
-			(agent.m_position2d - m_position2d).Length() < fAgentNeighborRadius)
+		if ((agent->m_position2d - m_position2d).Length() != 0 && 
+			(agent->m_position2d - m_position2d).Length() < fAgentNeighborRadius)
 		{
-			vGeneralAvoidance += (agent.m_position2d - m_position2d);
+			vGeneralAvoidance += (agent->m_position2d - m_position2d);
 			++iNeighborAgents;
 		}
 	}
@@ -262,18 +267,18 @@ XVECTOR2 Boid2D::ObstacleAvoidance()
 	XVECTOR2 vBackForce;
 	//Define the positions
 	
-	for each(GameObject obstacle in totalObstacles)
+	for each(GameObject* obstacle in totalObstacles)
 	{
-		if ((m_position2d - obstacle.m_position2d).Length() <= 10)
+		if ((m_position2d - obstacle->m_position2d).Length() <= 10)
 		{
 			//XVECTOR2 A, B, C, D;
 			//float fa, fb, fc, fd;
-			float obs_bounds= obstacle.boundary;
+			float obs_bounds= obstacle->boundary;
 			for (int i = 0; i < 4; ++i)
 			{
-				XVECTOR2 shoot = obstacle.m_position2d - Corners[i];
+				XVECTOR2 shoot = obstacle->m_position2d - Corners[i];
 				float dot = XVEC2Dot(shoot, Box[i]) / (Box[i].Length()  * Box[i].Length());
-				vBackForce += CheckBoundaries(Box[i], shoot, obstacle.m_position2d, Box[i], dot, obs_bounds);
+				vBackForce += CheckBoundaries(Box[i], shoot, obstacle->m_position2d, Box[i], dot, obs_bounds);
 			}
 			//A = obstacle.m_position2d - fLeftFar;
 			//B = obstacle.m_position2d - fLeftNear;
@@ -324,9 +329,9 @@ XVECTOR2 Boid2D::SurroundEnemies(XVECTOR2 objPos, float radius)
 	XVECTOR2 vPoint = vW - vV + m_position2d;
 	vForce += Arrive(vPoint);
 
-	for each(Boid2D agent in totalAgents)
+	for each(Boid2D* agent in totalAgents)
 	{
-		XVECTOR2 difference = (agent.m_position2d - m_position2d);
+		XVECTOR2 difference = (agent->m_position2d - m_position2d);
 		if (difference.Length() != 0 &&
 			difference.Length() <= 3.0f)
 		{

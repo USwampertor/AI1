@@ -1,5 +1,5 @@
 #pragma once
-#include <IDVMath.h>
+#include "IDVMath.h"
 enum class OBJECT_TYPE
 {
 	OBSTACLE,
@@ -18,12 +18,18 @@ public:
 	GameObject();
 	~GameObject();
 	virtual void Update() = 0;
+	void SetPosition(float x, float y);
 };
 GameObject::GameObject()
 {
 }
 GameObject::~GameObject()
 {
+}
+void GameObject::SetPosition(float x, float y)
+{
+	m_position2d.x = x;
+	m_position2d.y = y;
 }
 template <typename OBJECT>
 void GetList(std::vector<OBJECT> list)

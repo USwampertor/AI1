@@ -1,0 +1,7 @@
+﻿  AI_2015_1.cpp
+  Core.cpp
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(86): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(92): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+  Map.cpp
+  Generando código...
+  AI_2015_1.vcxproj -> C:\Users\PROPIETARIO\Documents\Visual Studio 2015\Projects\AI_2015_1\Bin\AI_2015_1.exe

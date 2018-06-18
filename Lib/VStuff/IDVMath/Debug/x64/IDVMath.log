@@ -1,0 +1,4 @@
+﻿  IDVMath.cpp
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\idvmath\src\idvmath.cpp(907): warning C4244: 'argumento': conversión de 'float' a 'unsigned int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\idvmath\src\idvmath.cpp(915): warning C4244: 'argumento': conversión de 'float' a 'unsigned int'; posible pérdida de datos
+  IDVMath.vcxproj -> C:\Users\PROPIETARIO\Documents\Visual Studio 2015\Projects\AI_2015_1\Lib\Debug\x64\IDVMath.lib
