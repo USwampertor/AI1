@@ -8,16 +8,23 @@ Map::Map()
 }
 Map::~Map()
 {
-	delete m_grid;
+	//delete m_grid;
 }
 void Map::Initialize(int gridwidth, int gridheight)
 {
-	m_gridSize.x = (float)gridwidth/TILESIZE;
-	m_gridSize.y = (float)gridheight/TILESIZE;
-	m_grid = new int*[gridwidth];
-	for (int i = 0; i < gridwidth; i+=TILESIZE)
+	m_gridSize.x = (float)gridwidth / TILESIZE;
+	m_gridSize.y = (float)gridheight / TILESIZE;
+	//m_grid = new TileNode*[gridwidth];
+	MapGrid grid(m_gridSize.x, std::vector<TileNode>(m_gridSize.y));
+	m_grid = grid;
+	for (int i = 0; i < m_gridSize.x; ++i)
 	{
-		m_grid[i] = new int[gridheight];
+		//m_grid[i] = new TileNode[gridheight];
+		for (int j = 0; j < m_gridSize.y; ++j)
+		{
+			TileNode t(XVECTOR2(i*TILESIZE, j*TILESIZE), TILESIZE);
+			m_grid[i][j] = t;
+		}
 	}
 }
 void Map::SetBeggining(XVECTOR2 position)
@@ -67,4 +74,23 @@ std::list<XVECTOR2> Map::GetObstacleList()
 {
 	return m_obstacles;
 }
-
+void Map::SetTile(XVECTOR2 vec, TILETYPE type)
+{
+	vec /= TILESIZE;
+	m_grid[vec.x][vec.y].Set(type);
+}
+bool Map::FindTile(XVECTOR2 vec, TILETYPE type)
+{
+	vec /= TILESIZE;
+	return m_grid[vec.x][vec.y].Get() == type;
+}
+void Map::Render(sf::RenderWindow* window)
+{
+	for (int i = 0; i < m_gridSize.x; ++i)
+	{
+		for (int j = 0; j < m_gridSize.y; ++j)
+		{
+			window->draw(m_grid[i][j].m_tile);
+		}
+	}
+}

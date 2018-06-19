@@ -14,7 +14,7 @@ Core::~Core()
 bool Core::Initialize()
 {
 	//Initialize window and resources we gonna need for the program
-	m_gameMap.Initialize(600, 400);
+	m_gameMap.Initialize(800, 400);
 	return true;
 }
 void Core::SFMLWINDOW()
@@ -49,7 +49,7 @@ void Core::EventHandler(sf::RenderWindow* window, sf::Event event)
 		window->setSize(sf::Vector2u(1000, 400));
 		break;
 	case sf::Event::MouseButtonPressed:
-		MouseEventHandler(*window, event);
+		MouseEventHandler(event);
 		break;
 	}
 }
@@ -76,67 +76,72 @@ void Core::KeyBoardEventHander(sf::Event event)
 		std::cout << "Changed to A* algorithm \n";
 	}
 }
-void Core::MouseEventHandler(sf::RenderWindow& window, sf::Event event)
+void Core::MouseEventHandler(sf::Event event)
 {
 	if (event.mouseButton.button == sf::Mouse::Right)
 	{
 		//std::cout << "nibba right \n";
-		std::cout << event.mouseButton.x << " " << event.mouseButton.y << "\n";
+		//std::cout << event.mouseButton.x << " " << event.mouseButton.y << "\n";
+		m_gameMap.SetTile(m_gameMap.GetEnding(), TILETYPE::NONE);
 		m_gameMap.SetEnding(XVECTOR2(
 			event.mouseButton.x - event.mouseButton.x % 10,
 			event.mouseButton.y - event.mouseButton.y % 10));
+		m_gameMap.SetTile(m_gameMap.GetEnding(), TILETYPE::FINISH);
 	}
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
 		//std::cout << "nibba left \n";
-		std::cout << event.mouseButton.x << " " << event.mouseButton.y << "\n";
+		//std::cout << event.mouseButton.x << " " << event.mouseButton.y << "\n";
+		m_gameMap.SetTile(m_gameMap.GetBeggining(), TILETYPE::NONE);
 		m_gameMap.SetBeggining(XVECTOR2(
 			event.mouseButton.x - event.mouseButton.x%10,
 			event.mouseButton.y- event.mouseButton.y%10));
+		m_gameMap.SetTile(m_gameMap.GetBeggining(), TILETYPE::START);
 	}
-	if (event.mouseButton.button == sf::Mouse::XButton2)
+	if (event.mouseButton.button == sf::Mouse::Middle)
 	{
-		std::cout << event.mouseButton.x << " " << event.mouseButton.y << "\n";
-		if (!m_gameMap.FindObstacle(XVECTOR2(
+		//std::cout << event.mouseButton.x << " " << event.mouseButton.y << "\n";
+		if (!m_gameMap.FindTile(XVECTOR2(
 			event.mouseButton.x - event.mouseButton.x % 10,
-			event.mouseButton.y - event.mouseButton.y % 10)))
+			event.mouseButton.y - event.mouseButton.y % 10),TILETYPE::OBSTACLE))
 		{
-			m_gameMap.AddObstacle(XVECTOR2(
+			m_gameMap.SetTile(XVECTOR2(
 				event.mouseButton.x - event.mouseButton.x % 10,
-				event.mouseButton.y - event.mouseButton.y % 10));
+				event.mouseButton.y - event.mouseButton.y % 10),TILETYPE::OBSTACLE);
 		}
 		else
 		{
-			m_gameMap.DeleteObstacle(XVECTOR2(
+			m_gameMap.SetTile(XVECTOR2(
 				event.mouseButton.x - event.mouseButton.x % 10,
-				event.mouseButton.y - event.mouseButton.y % 10));
+				event.mouseButton.y - event.mouseButton.y % 10),TILETYPE::NONE);
 		}
 	}
 }
 void Core::Draw(sf::RenderWindow* window)
 {
 	sf::RectangleShape uirectangle(sf::Vector2f(200, 400));
-	uirectangle.setFillColor(sf::Color::White);
+	uirectangle.setFillColor(sf::Color(150,150,150));
 	uirectangle.setPosition(sf::Vector2f(800, 0));
 	window->draw(uirectangle);
 
-	sf::RectangleShape beggining(sf::Vector2f(10, 10));
-	beggining.setPosition(m_tool.VEC2toVec2f(m_gameMap.GetBeggining()));
-	beggining.setFillColor(sf::Color::Blue);
-	window->draw(beggining);
-
-	sf::RectangleShape ending(sf::Vector2f(10, 10));
-	ending.setPosition(m_tool.VEC2toVec2f(m_gameMap.GetEnding()));
-	ending.setFillColor(sf::Color::Red);
-	window->draw(ending);
-
-	std::list<XVECTOR2> obstacles = m_gameMap.GetObstacleList();
-	for (auto it = obstacles.begin(); it != obstacles.end(); ++it)
-	{
-		sf::RectangleShape obstacle(sf::Vector2f(10, 10));
-		obstacle.setPosition(VEC2toVec2f(*it));
-		obstacle.setFillColor(sf::Color::White);
-		window->draw(obstacle);
-	}
+	//sf::RectangleShape beggining(sf::Vector2f(10, 10));
+	//beggining.setPosition(IDVtoSFML(m_gameMap.GetBeggining()));
+	//beggining.setFillColor(sf::Color::Blue);
+	//window->draw(beggining);
+	//
+	//sf::RectangleShape ending(sf::Vector2f(10, 10));
+	//ending.setPosition(IDVtoSFML(m_gameMap.GetEnding()));
+	//ending.setFillColor(sf::Color::Red);
+	//window->draw(ending);
+	//
+	//std::list<XVECTOR2> obstacles = m_gameMap.GetObstacleList();
+	//for (auto it = obstacles.begin(); it != obstacles.end(); ++it)
+	//{
+	//	sf::RectangleShape obstacle(sf::Vector2f(10, 10));
+	//	obstacle.setPosition(IDVtoSFML(*it));
+	//	obstacle.setFillColor(sf::Color::White);
+	//	window->draw(obstacle);
+	//}
+	m_gameMap.Render(window);
 }
 

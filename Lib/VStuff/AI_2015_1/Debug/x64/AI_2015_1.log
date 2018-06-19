@@ -1,15 +1,12 @@
-﻿  AI_2015_1.cpp
-  Core.cpp
+﻿  Core.cpp
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(88): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(87): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(86): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(95): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(94): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(102): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(101): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(98): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(97): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(106): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(105): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(112): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(111): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-  Map.cpp
-  Generando código...
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(110): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(109): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(116): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(115): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
   AI_2015_1.vcxproj -> C:\Users\PROPIETARIO\Documents\Visual Studio 2015\Projects\AI_2015_1\Bin\AI_2015_1.exe

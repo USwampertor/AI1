@@ -1,11 +1,12 @@
 #pragma once
-#include "IDVMath.h"
+#include "TileNode.h"
 #include <list>
-#include "Utilities.h"
+#include <vector>
 class Map
 {
 private:
-	int** m_grid;
+	typedef std::vector<std::vector<TileNode>> MapGrid;
+	MapGrid m_grid;
 	XVECTOR2 m_gridSize;
 	XVECTOR2 m_beggining, m_ending;
 	std::list<XVECTOR2> m_obstacles;
@@ -21,5 +22,8 @@ public:
 	std::list<XVECTOR2> GetObstacleList();
 	XVECTOR2 GetBeggining();
 	XVECTOR2 GetEnding();
+	void SetTile(XVECTOR2 vec, TILETYPE type);
+	bool FindTile(XVECTOR2 vec, TILETYPE type);
+	void Render(sf::RenderWindow* window);
 };
 
