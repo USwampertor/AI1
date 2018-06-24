@@ -7,8 +7,8 @@ enum TILETYPE
 	START,
 	FINISH,
 	OBSTACLE,
-	OPEN,
-	CLOSED
+	VISITED,
+	NOTVISITED
 };
 class TileNode
 {

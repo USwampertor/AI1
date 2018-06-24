@@ -13,7 +13,7 @@ int main()
 	Core game;
 	if (!game.Initialize())
 	{
-		std::cout << "Failed to Initialize window... \n Closing program... \n";
+		std::cout << "Failed to Initialize window...\n";
 		return 0;
 	}
 	game.SFMLWINDOW();

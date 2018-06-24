@@ -94,3 +94,7 @@ void Map::Render(sf::RenderWindow* window)
 		}
 	}
 }
+XVECTOR2 Map::GetGridSize()
+{
+	return m_gridSize;
+}

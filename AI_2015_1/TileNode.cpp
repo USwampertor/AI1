@@ -33,10 +33,10 @@ void TileNode::Set(TILETYPE type)
 	case OBSTACLE:
 		m_tileColor = sf::Color::Green;
 		break;
-	case OPEN:
+	case VISITED:
 		m_tileColor = sf::Color::Yellow;
 		break;
-	case CLOSED:
+	case NOTVISITED:
 		m_tileColor = sf::Color::Magenta;
 		break;
 	default:
