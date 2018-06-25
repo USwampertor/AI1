@@ -13,16 +13,18 @@ enum TILETYPE
 class TileNode
 {
 public:
+	TileNode(XVECTOR2 position, int size);
+	TileNode();
+	~TileNode();
+	TILETYPE Get();
+	void Set(TILETYPE type);
+	
 	XVECTOR2 m_tilePosition;
 	sf::RectangleShape m_tile;
 	int m_tileSize;
 	sf::Color m_tileColor;
 	TILETYPE m_tileType;
-	TileNode(XVECTOR2 position, int size);
-	void Set(TILETYPE type);
-	TILETYPE Get();
-	TileNode();
-	~TileNode();
+	TileNode* m_parent;
 };
 class CostedTile : public TileNode
 {

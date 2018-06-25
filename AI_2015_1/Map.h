@@ -13,6 +13,7 @@ public:
 	MapGrid m_grid;
 	Map();
 	Map(const Map& copy);
+	Map(int gridwidth, int gridheight);
 	~Map();
 	void Initialize(int gridwidth, int gridheight);
 	void SetBeggining(XVECTOR2 position);

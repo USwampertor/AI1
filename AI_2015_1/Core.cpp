@@ -242,7 +242,7 @@ void Core::SearchnDestroy(sf::RenderWindow* window)
 	{
 		return;
 	}
-	m_pathfinder->Render(window);
+	m_pathfinder->Search(window);
 	m_selectedPathfinder.setString("--FINAL--");
 	m_searching = false;
 }

@@ -10,6 +10,13 @@ Map::Map(const Map& copy)
 {
 	*this = copy;
 }
+Map::Map(int gridwidth, int gridheight)
+{
+	m_gridSize.x = (float)gridwidth / TILESIZE;
+	m_gridSize.y = (float)gridheight / TILESIZE;
+	MapGrid grid(m_gridSize.x, std::vector<TileNode*>(m_gridSize.y));
+	m_grid = grid;
+}
 Map::~Map()
 {
 	//delete m_grid;

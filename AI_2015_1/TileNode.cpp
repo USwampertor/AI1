@@ -4,6 +4,7 @@
 TileNode::TileNode()
 {
 	m_tilePosition = { 0,0 };
+	m_parent = nullptr;
 }
 TileNode::TileNode(XVECTOR2 position, int size)
 {
@@ -12,6 +13,7 @@ TileNode::TileNode(XVECTOR2 position, int size)
 	m_tile.setSize(sf::Vector2f(size,size));
 	Set(TILETYPE::NONE);
 	m_tile.setPosition(IDVtoSFML(m_tilePosition));
+	m_parent = nullptr;
 }
 TileNode::~TileNode()
 {
