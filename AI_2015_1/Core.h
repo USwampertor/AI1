@@ -10,7 +10,8 @@ private:
 	sf::Text m_selectedPathfinder;
 	Map m_gameMap;
 	PathFinder* m_pathfinder;
-	bool m_close = false;
+	int m_pathfindertype = -1;
+	bool m_close = false, m_searching = false;
 public:
 	Core();
 	~Core();
@@ -20,6 +21,9 @@ public:
 	void KeyBoardEventHander(sf::Event event);
 	void MouseEventHandler(sf::Event event);
 	void Draw(sf::RenderWindow* window);
+	bool SetPathfinder();
+	bool InitPathfinder();
+	void SearchnDestroy(sf::RenderWindow* window);
 	//MOVED THEM TO UTILITIES
 };
 

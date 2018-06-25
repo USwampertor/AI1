@@ -24,4 +24,12 @@ public:
 	TileNode();
 	~TileNode();
 };
-
+class CostedTile : public TileNode
+{
+public:
+	int cost;
+	int GetCost()
+	{
+		return 0;
+	}
+};

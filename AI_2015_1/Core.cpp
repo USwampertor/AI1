@@ -38,8 +38,8 @@ void Core::SFMLWINDOW()
 		while (window.pollEvent(event))
 		{
 			EventHandler(&window, event);
-
 		}
+		if(m_searching)SearchnDestroy(&window);
 		Draw(&window);
 		window.display();
 	}
@@ -73,26 +73,36 @@ void Core::KeyBoardEventHander(sf::Event event)
 	{
 		std::cout << "Changed to Breadth FS algorithm \n";
 		m_selectedPathfinder.setString("BREADTH FIRST SEARCH");
+		m_pathfindertype = 1;
+		if (!SetPathfinder()) m_selectedPathfinder.setString("FAILED TO SET PATHFINDER!!!");
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
 	{
 		std::cout << "Changed to Depth FS algorithm \n";
 		m_selectedPathfinder.setString("DEPTH FIRST SEARCH");
+		m_pathfindertype = 2;
+		if (!SetPathfinder()) m_selectedPathfinder.setString("FAILED TO SET PATHFINDER!!!");
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
 	{
 		std::cout << "Changed to Dijkstra algorithm \n";
 		m_selectedPathfinder.setString("DIJKSTRA");
+		m_pathfindertype = 3;
+		if (!SetPathfinder()) m_selectedPathfinder.setString("FAILED TO SET PATHFINDER!!!");
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4))
 	{
 		std::cout << "Changed to Best FS algorithm \n";
 		m_selectedPathfinder.setString("BEST FIRST SEARCH");
+		m_pathfindertype = 4;
+		if (!SetPathfinder()) m_selectedPathfinder.setString("FAILED TO SET PATHFINDER!!!");
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5))
 	{
 		std::cout << "Changed to A* algorithm \n";
 		m_selectedPathfinder.setString("A STAR");
+		m_pathfindertype = 5;
+		if(!SetPathfinder()) m_selectedPathfinder.setString("FAILED TO SET PATHFINDER!!!");
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	{
@@ -102,8 +112,12 @@ void Core::KeyBoardEventHander(sf::Event event)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
 	{
 		if (m_pathfinder == nullptr) m_selectedPathfinder.setString("CHOOSE AN ALGORITHM");
+		else
+		{
+			m_selectedPathfinder.setString("Starting...");
+			/*if (InitPathfinder());*/ m_searching = true;
+		}
 	}
-
 }
 void Core::MouseEventHandler(sf::Event event)
 {
@@ -179,4 +193,56 @@ void Core::Draw(sf::RenderWindow* window)
 	//}
 	m_gameMap.Render(window);
 }
-
+bool Core::SetPathfinder()
+{
+	if (m_pathfindertype != -1)
+	{
+		delete m_pathfinder;
+		switch (m_pathfindertype)
+		{
+		case 1:
+			m_pathfinder = new BFS();
+			break;
+		case 2:
+			m_pathfinder = new DFS();
+			break;
+		case 3:
+			m_pathfinder = new Dijkstra();
+			break;
+		case 4:
+			m_pathfinder = new BestSearch();
+			break;
+		case 5:
+			m_pathfinder = new Astar();
+			break;
+		default:
+			m_selectedPathfinder.setString("Don't really know \n how you got here");
+			return false;
+			break;
+		}
+		if (m_pathfinder == nullptr) return false;
+	}
+	return true;
+		
+}
+bool Core::InitPathfinder()
+{
+	if (!(m_pathfinder->Initialize(m_gameMap)))
+	{
+		m_selectedPathfinder.setString("FAILED TO INITIALIZE PATHFINDER");
+		return false;
+	}
+	else
+		m_selectedPathfinder.setString("--SEARCH AND DESTROY--");
+	return true;
+}
+void Core::SearchnDestroy(sf::RenderWindow* window)
+{
+	if (!InitPathfinder())
+	{
+		return;
+	}
+	m_pathfinder->Render(window);
+	m_selectedPathfinder.setString("--FINAL--");
+	m_searching = false;
+}
