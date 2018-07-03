@@ -24,6 +24,22 @@ bool Core::Initialize()
 	m_selectedPathfinder.setFillColor(sf::Color::Black);
 	m_selectedPathfinder.setPosition(sf::Vector2f(820, 20));
 	m_selectedPathfinder.setString("Not using any \n algorithm");
+	m_startingPoint.setFont(m_font);
+	m_startingPoint.setCharacterSize(8);
+	m_startingPoint.setFillColor(sf::Color::Black);
+	m_startingPoint.setPosition(sf::Vector2f(850, 40));
+	m_startingPoint.setString("NAN"); 
+	m_endingPoint.setFont(m_font);
+	m_endingPoint.setCharacterSize(8);
+	m_endingPoint.setFillColor(sf::Color::Black);
+	m_endingPoint.setPosition(sf::Vector2f(850, 60));
+	m_endingPoint.setString("NAN");
+	m_startRectangle.setSize(sf::Vector2f(TILESIZE, TILESIZE));
+	m_startRectangle.setFillColor(sf::Color::Red);
+	m_startRectangle.setPosition(sf::Vector2f(820, 40));
+	m_endingRectangle.setSize(sf::Vector2f(TILESIZE, TILESIZE));
+	m_endingRectangle.setFillColor(sf::Color::Blue);
+	m_endingRectangle.setPosition(sf::Vector2f(820, 60));
 	m_pathfinder = nullptr;
 	return true;
 }
@@ -39,7 +55,7 @@ void Core::SFMLWINDOW()
 		{
 			EventHandler(&window, event);
 		}
-		if(m_searching)SearchnDestroy(&window);
+		if(m_searching==1)SearchnDestroy(&window);
 		Draw(&window);
 		window.display();
 	}
@@ -115,7 +131,7 @@ void Core::KeyBoardEventHander(sf::Event event)
 		else
 		{
 			m_selectedPathfinder.setString("Starting...");
-			/*if (InitPathfinder());*/ m_searching = true;
+			/*if (InitPathfinder());*/ m_searching = 1;
 		}
 	}
 }
@@ -125,41 +141,41 @@ void Core::MouseEventHandler(sf::Event event)
 	{
 		if (event.mouseButton.button == sf::Mouse::Right)
 		{
-			//std::cout << "nibba right \n";
 			//std::cout << event.mouseButton.x << " " << event.mouseButton.y << "\n";
 			m_gameMap.SetTile(m_gameMap.GetEnding(), TILETYPE::NONE);
-			m_gameMap.SetEnding(XVECTOR2(
-				event.mouseButton.x - event.mouseButton.x % 10,
-				event.mouseButton.y - event.mouseButton.y % 10));
+			m_gameMap.SetEnding(
+				PixeltoGrid(XVECTOR2(event.mouseButton.x, event.mouseButton.y)));
 			m_gameMap.SetTile(m_gameMap.GetEnding(), TILETYPE::FINISH);
+			m_endingPoint.setString(
+				ReturnString(PixeltoGrid(XVECTOR2(event.mouseButton.x, event.mouseButton.y))));
 		}
 		if (event.mouseButton.button == sf::Mouse::Left)
 		{
-			//std::cout << "nibba left \n";
 			//std::cout << event.mouseButton.x << " " << event.mouseButton.y << "\n";
 			m_gameMap.SetTile(m_gameMap.GetBeggining(), TILETYPE::NONE);
-			m_gameMap.SetBeggining(XVECTOR2(
-				event.mouseButton.x - event.mouseButton.x % 10,
-				event.mouseButton.y - event.mouseButton.y % 10));
+			m_gameMap.SetBeggining(
+				PixeltoGrid(XVECTOR2(event.mouseButton.x, event.mouseButton.y)));
 			m_gameMap.SetTile(m_gameMap.GetBeggining(), TILETYPE::START);
+			m_startingPoint.setString(
+				ReturnString(PixeltoGrid(XVECTOR2(event.mouseButton.x, event.mouseButton.y))));
 		}
 		if (event.mouseButton.button == sf::Mouse::Middle)
 		{
 
 			//std::cout << event.mouseButton.x << " " << event.mouseButton.y << "\n";
-			if (!m_gameMap.FindTile(XVECTOR2(
-				event.mouseButton.x - event.mouseButton.x % 10,
-				event.mouseButton.y - event.mouseButton.y % 10), TILETYPE::OBSTACLE))
+			if (!m_gameMap.FindTile(
+				PixeltoGrid(XVECTOR2(event.mouseButton.x, event.mouseButton.y)), 
+				TILETYPE::OBSTACLE))
 			{
-				m_gameMap.SetTile(XVECTOR2(
-					event.mouseButton.x - event.mouseButton.x % 10,
-					event.mouseButton.y - event.mouseButton.y % 10), TILETYPE::OBSTACLE);
+				m_gameMap.SetTile(
+					PixeltoGrid(XVECTOR2(event.mouseButton.x, event.mouseButton.y)), 
+					TILETYPE::OBSTACLE);
 			}
 			else
 			{
-				m_gameMap.SetTile(XVECTOR2(
-					event.mouseButton.x - event.mouseButton.x % 10,
-					event.mouseButton.y - event.mouseButton.y % 10), TILETYPE::NONE);
+				m_gameMap.SetTile(
+					PixeltoGrid(XVECTOR2(event.mouseButton.x, event.mouseButton.y)),
+					TILETYPE::NONE);
 			}
 			
 
@@ -173,6 +189,10 @@ void Core::Draw(sf::RenderWindow* window)
 	uirectangle.setPosition(sf::Vector2f(800, 0));
 	window->draw(uirectangle);
 	window->draw(m_selectedPathfinder);
+	window->draw(m_startingPoint);
+	window->draw(m_endingPoint);
+	window->draw(m_startRectangle);
+	window->draw(m_endingRectangle);
 	//sf::RectangleShape beggining(sf::Vector2f(10, 10));
 	//beggining.setPosition(IDVtoSFML(m_gameMap.GetBeggining()));
 	//beggining.setFillColor(sf::Color::Blue);
@@ -192,6 +212,7 @@ void Core::Draw(sf::RenderWindow* window)
 	//	window->draw(obstacle);
 	//}
 	m_gameMap.Render(window);
+	if (m_searching==2) m_pathfinder->RenderPath(window);
 }
 bool Core::SetPathfinder()
 {
@@ -233,7 +254,7 @@ bool Core::InitPathfinder()
 		return false;
 	}
 	else
-		m_selectedPathfinder.setString("--SEARCH AND DESTROY--");
+		m_selectedPathfinder.setString("--SEARCHING--");
 	return true;
 }
 void Core::SearchnDestroy(sf::RenderWindow* window)
@@ -244,5 +265,5 @@ void Core::SearchnDestroy(sf::RenderWindow* window)
 	}
 	m_pathfinder->Search(window);
 	m_selectedPathfinder.setString("--FINAL--");
-	m_searching = false;
+	m_searching = 2;
 }

@@ -12,6 +12,7 @@ TileNode::TileNode(XVECTOR2 position, int size)
 	m_tileSize = size;
 	m_tile.setSize(sf::Vector2f(size,size));
 	Set(TILETYPE::NONE);
+	//XVECTOR2 pos = position * m_tileSize;
 	m_tile.setPosition(IDVtoSFML(m_tilePosition));
 	m_parent = nullptr;
 }
@@ -24,7 +25,7 @@ void TileNode::Set(TILETYPE type)
 	switch (type)
 	{
 	case NONE:
-		m_tileColor = sf::Color::White;
+		m_tileColor = sf::Color::Transparent;
 		break;
 	case START:
 		m_tileColor = sf::Color::Red;
@@ -41,6 +42,8 @@ void TileNode::Set(TILETYPE type)
 	case NOTVISITED:
 		m_tileColor = sf::Color::Magenta;
 		break;
+	case FINALPATH:
+		m_tileColor = sf::Color::Cyan;
 	default:
 		break;
 	}
@@ -49,4 +52,24 @@ void TileNode::Set(TILETYPE type)
 TILETYPE TileNode::Get()
 {
 	return m_tileType;
+}
+CostedTile::CostedTile()
+{
+}
+CostedTile::~CostedTile()
+{
+
+}
+void CostedTile::SetInfo(TileNode* t)
+{
+	m_tilePosition = t->m_tilePosition;
+	m_tile = t->m_tile;
+	m_tileSize = t->m_tileSize;
+	m_tileColor = t->m_tileColor;
+	m_tileType = t->m_tileType;
+	m_parent = nullptr;
+}
+bool TileNode::operator < (const TileNode& ct1) const
+{
+	return cost > ct1.cost;
 }

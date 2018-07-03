@@ -915,4 +915,7 @@ float RandomGet(float seed)
 	srand(seed);
 	return (float)rand();
 }
-
+float XVEC2SqrSum(XVECTOR2 a, XVECTOR2 b)
+{
+	return (((a.x - b.x)*(a.x - b.x)) + ((a.y - b.y)*(a.y - b.y)));
+}

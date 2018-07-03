@@ -8,7 +8,8 @@ enum TILETYPE
 	FINISH,
 	OBSTACLE,
 	VISITED,
-	NOTVISITED
+	NOTVISITED,
+	FINALPATH
 };
 class TileNode
 {
@@ -18,20 +19,25 @@ public:
 	~TileNode();
 	TILETYPE Get();
 	void Set(TILETYPE type);
-	
+	int cost = 0;
 	XVECTOR2 m_tilePosition;
 	sf::RectangleShape m_tile;
 	int m_tileSize;
 	sf::Color m_tileColor;
 	TILETYPE m_tileType;
 	TileNode* m_parent;
+	bool operator < (const TileNode& ct1) const;
 };
 class CostedTile : public TileNode
 {
 public:
-	int cost;
-	int GetCost()
+	CostedTile();
+	~CostedTile();
+	void SetInfo(TileNode* t);
+	int m_cost;
+	int GetCost(XVECTOR2 finishingpoint)
 	{
-		return 0;
+		return XVEC2Dot(m_tilePosition, finishingpoint);
 	}
+	
 };

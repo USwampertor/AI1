@@ -474,7 +474,7 @@ float XVEC2Angle(XVECTOR2 vector);
 
 float RandomRange(float fmin, float fmax, float seed);
 float RandomGet(float seed);
-
+float XVEC2SqrSum(XVECTOR2 a, XVECTOR2 b);
 #endif
 
 

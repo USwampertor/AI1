@@ -33,6 +33,7 @@ void Map::Initialize(int gridwidth, int gridheight)
 		for (int j = 0; j < m_gridSize.y; ++j)
 		{
 			TileNode* t = new TileNode(XVECTOR2(i*TILESIZE, j*TILESIZE), TILESIZE);
+			//TileNode* t = new TileNode(XVECTOR2(i, j), TILESIZE);
 			m_grid[i][j] = t;
 		}
 	}
