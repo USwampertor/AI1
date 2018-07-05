@@ -26,15 +26,19 @@ void TileNode::Set(TILETYPE type)
 	{
 	case NONE:
 		m_tileColor = sf::Color::Transparent;
+		cost = 1;
 		break;
 	case START:
 		m_tileColor = sf::Color::Red;
+		cost = 0;
 		break;
 	case FINISH:
 		m_tileColor = sf::Color::Blue;
+		cost = 0;
 		break;
 	case OBSTACLE:
 		m_tileColor = sf::Color::Green;
+		cost = OBSTACLECOST;
 		break;
 	case VISITED:
 		m_tileColor = sf::Color::Yellow;
@@ -71,5 +75,5 @@ void CostedTile::SetInfo(TileNode* t)
 }
 bool TileNode::operator < (const TileNode& ct1) const
 {
-	return cost > ct1.cost;
+	return m_fCost > ct1.m_fCost;
 }

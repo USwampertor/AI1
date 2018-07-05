@@ -21,9 +21,20 @@ XVECTOR2 PixeltoGrid(XVECTOR2 vec)
 	tmp.y = tmp.y - (int)tmp.y % TILESIZE;
 	return tmp;
 }
-std::string ReturnString(XVECTOR2 vec)
+sf::String ReturnString(XVECTOR2 vec)
 {
-	std::string tmp;
-	tmp = vec.x; tmp += " "; tmp += vec.y;
+	//sf::String x = std::to_string((int)vec.x);	
+	//sf::String y = std::to_string((int)vec.y);
+	sf::String tmp = (std::to_string((int)vec.x) + ", " + std::to_string((int)vec.y));
 	return tmp;
+}
+int ManhattanDistance(XVECTOR2 start, XVECTOR2 finish)
+{
+	return (std::abs(finish.x - start.x) + std::abs(finish.y - start.y));
+}
+float EuclideanDistance(XVECTOR2 start, XVECTOR2 finish)
+{
+	return std::sqrt(
+		((finish.x - start.x)*(finish.x - start.x) + 
+		(finish.y - start.y)*(finish.y - start.y)));
 }

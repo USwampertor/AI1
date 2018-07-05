@@ -20,6 +20,8 @@ public:
 	TILETYPE Get();
 	void Set(TILETYPE type);
 	int cost = 0;
+	int m_costsofar = 0;
+	int m_fCost = 0;
 	XVECTOR2 m_tilePosition;
 	sf::RectangleShape m_tile;
 	int m_tileSize;

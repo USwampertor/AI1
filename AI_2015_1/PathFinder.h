@@ -4,6 +4,10 @@
 #include <stack>
 #include <list>
 #include "Map.h"
+#define MANHATTAN
+//#define EUCLIDEAN
+//#define SQUARESUM
+
 //BASE FOR PATHFINDING ALGORITHMS
 enum class PATHSTATE
 {
@@ -477,7 +481,7 @@ public:
 class Dijkstra : public PathFinder
 {
 private:
-	std::queue<TileNode*> m_openList;
+	std::priority_queue<TileNode*> m_openList;
 public:
 	Dijkstra()
 	{
@@ -502,8 +506,7 @@ public:
 		{
 			for (int j = 0; j < m_map->GetGridSize().y; ++j)
 			{
-				CostedTile* t = new CostedTile();
-				t->SetInfo(&sourcemap.GetTile(XVECTOR2(i, j)));
+				TileNode* t = new TileNode(sourcemap.GetTile(XVECTOR2(i, j)));
 				if (t->Get() == TILETYPE::NONE)
 				{
 					t->Set(TILETYPE::NOTVISITED);
@@ -527,7 +530,16 @@ public:
 	}
 	void CheckNode(const XVECTOR2 pos)
 	{
-
+		if (m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost >= OBSTACLECOST)
+		{
+			return;
+		}
+		
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost = 
+			m_node->m_fCost + m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost;
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
+		m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
 	}
 };
 //BESTSEARCH ALGORITHM
@@ -574,11 +586,11 @@ public:
 				//}
 				//m_map->m_grid[i][j] = t;
 				//if (m_map->m_grid[i][j]->Get() != TILETYPE::OBSTACLE &&
-				//	m_map->m_grid[i][j]->Get() != TILETYPE::FINISH &&
-				//	m_map->m_grid[i][j]->Get() != TILETYPE::START)
-				//{
-				//	m_map->m_grid[i][j]->Set(TILETYPE::NOTVISITED);
-				//}
+//	m_map->m_grid[i][j]->Get() != TILETYPE::FINISH &&
+//	m_map->m_grid[i][j]->Get() != TILETYPE::START)
+//{
+//	m_map->m_grid[i][j]->Set(TILETYPE::NOTVISITED);
+//}
 			}
 		}
 		SetStartingPoint(sourcemap.GetBeggining());
@@ -595,7 +607,7 @@ public:
 		{
 			return;
 		}
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost = 
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost =
 			(int)XVEC2SqrSum(pos, m_endPoint);
 		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
 		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
@@ -657,7 +669,29 @@ public:
 	}
 	void CheckNode(const XVECTOR2 pos)
 	{
-		
-		
+
+		if (m_map->FindTile(pos, TILETYPE::OBSTACLE))
+		{
+			return;
+		}
+		int tmpcost = 0;
+#ifdef MANHATTAN
+		tmpcost = ManhattanDistance(pos, m_endPoint);
+#endif
+#ifdef EUCLIDEAN
+		tmpcost = EuclideanDistance(pos, m_endPoint);
+#endif
+#ifdef SQUARESUM
+		tmpcost = XVEC2SqrSum(pos, m_endPoint);
+#endif
+		if (m_map->FindTile(pos, TILETYPE::VISITED) && 
+			tmpcost >= m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost) return;
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost = tmpcost;
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
+		if (m_map->FindTile(pos, TILETYPE::VISITED)) return;
+		m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
+		//m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
+		//m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
 	}
 };
