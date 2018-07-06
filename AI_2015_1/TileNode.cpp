@@ -75,5 +75,9 @@ void CostedTile::SetInfo(TileNode* t)
 }
 bool TileNode::operator < (const TileNode& ct1) const
 {
-	return m_fCost > ct1.m_fCost;
+	return m_fCost < ct1.m_fCost;
+}
+bool TileNode::operator > (const TileNode& ct1) const
+{
+	return m_fCost < ct1.m_fCost;
 }

@@ -29,6 +29,7 @@ public:
 	TILETYPE m_tileType;
 	TileNode* m_parent;
 	bool operator < (const TileNode& ct1) const;
+	bool operator > (const TileNode& ct1) const;
 };
 class CostedTile : public TileNode
 {

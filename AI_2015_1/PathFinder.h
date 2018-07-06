@@ -4,6 +4,7 @@
 #include <stack>
 #include <list>
 #include "Map.h"
+#define _PULLSTRING
 #define MANHATTAN
 //#define EUCLIDEAN
 //#define SQUARESUM
@@ -295,7 +296,9 @@ public:
 			}
 			printf("WE BACKTRACKED BOIS!\n");
 			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
+#ifdef PULLSTRING
 			PullString();
+#endif
 		}
 	}
 	void CheckNode(const XVECTOR2 pos)
@@ -463,7 +466,9 @@ public:
 			}
 			printf("WE BACKTRACKED BOIS!\n");
 			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
+#ifdef PULLSTRING
 			PullString();
+#endif
 		}
 	}
 	void CheckNode(const XVECTOR2 pos)
@@ -481,7 +486,7 @@ public:
 class Dijkstra : public PathFinder
 {
 private:
-	std::priority_queue<TileNode*> m_openList;
+	std::priority_queue<TileNode*,std::vector<TileNode*>,std::less<TileNode*>> m_openList;
 public:
 	Dijkstra()
 	{
@@ -497,8 +502,8 @@ public:
 		if (m_map != nullptr)
 		{
 			delete m_map;
-			m_startPoint = nullptr;
-			m_endPoint = nullptr;
+			m_startPoint = { 0, 0};
+			m_endPoint = { 0, 0 };
 		}
 		m_map = new Map(sourcemap.GetGridSize().x*TILESIZE, sourcemap.GetGridSize().y*TILESIZE);
 		//m_map = &sourcemap;
@@ -526,19 +531,129 @@ public:
 	}
 	void Search(sf::RenderWindow* window)
 	{
-		//Render(window);
+		m_backtracklist.clear();
+		//Starts the OpenList and inserts starting point as the first node in the list
+		while (!m_openList.empty())
+		{
+			m_openList.pop();
+		}
+		PATHSTATE state = PATHSTATE::SEARCHING;
+		m_openList.push(&m_map->GetTile(m_startPoint / TILESIZE));
+		while (PATHSTATE::SEARCHING == state)
+		{
+			//state will continue searching until it realizes its unable to get there
+			//or actually got there
+			if (!m_openList.empty())
+			{
+				m_node = m_openList.top();
+				m_openList.pop();
+
+				if (m_node->m_tilePosition == m_endPoint)
+				{
+					state = PATHSTATE::FINISHED;
+					break;
+				}
+				XVECTOR2 temp;
+				//EAST NODE
+				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.y = m_node->m_tilePosition.y;
+				if (temp.x < m_map->GetGridSize().x*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//EAST SOUTH
+				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				if (temp.x < m_map->GetGridSize().x*TILESIZE &&
+					temp.y < m_map->GetGridSize().y*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//SOUTH NODE
+				temp.x = m_node->m_tilePosition.x;
+				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				if (temp.y < m_map->GetGridSize().y*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//SOUTH WEST
+				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				if (temp.x >= 0 &&
+					temp.y < m_map->GetGridSize().y*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//WEST NODE
+				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.y = m_node->m_tilePosition.y;
+				if (temp.x >= 0)
+				{
+					CheckNode(temp);
+				}
+				//NORTH WEST
+				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				if (temp.x >= 0 &&
+					temp.y >= 0)
+				{
+					CheckNode(temp);
+				}
+				//NORTH NODE
+				temp.x = m_node->m_tilePosition.x;
+				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				if (temp.y >= 0)
+				{
+					CheckNode(temp);
+				}
+				//NORTH EAST
+				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				if (temp.x < m_map->GetGridSize().x *TILESIZE &&
+					temp.y >= 0)
+				{
+					CheckNode(temp);
+				}
+				state = PATHSTATE::SEARCHING;
+			}
+			else state = PATHSTATE::FAILED;
+			//Render(window);
+		}
+		if (state == PATHSTATE::FAILED)
+		{
+			//We return an error saying that the object is unable to get to the ending
+			printf("OH NO! A FUCK UP!\n");
+		}
+		else if (state == PATHSTATE::FINISHED)
+		{
+			//We make backtracking
+			printf("WE FOUND IT BOIS!\n");
+			while (m_node->m_parent != nullptr)
+			{
+				m_backtracklist.push_back(m_node);
+				m_node = m_node->m_parent;
+			}
+			printf("WE BACKTRACKED BOIS!\n");
+			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
+#ifdef PULLSTRING
+			PullString();
+#endif
+		}
 	}
 	void CheckNode(const XVECTOR2 pos)
 	{
-		if (m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost >= OBSTACLECOST)
+		if (m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost >= OBSTACLECOST||
+			(m_node->m_fCost + m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost >= 
+			m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost &&
+				m_map->FindTile(pos, TILETYPE::VISITED)))
 		{
 			return;
 		}
-		
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
 		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost = 
 			m_node->m_fCost + m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost;
 		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
+		if (m_map->FindTile(pos, TILETYPE::VISITED))return;
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
 		m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
 	}
 };
@@ -547,7 +662,8 @@ class BestSearch : public PathFinder
 {
 private:
 	//std::priority_queue<CostedTile*,std::vector<CostedTile*>,LessCost> m_openList;
-	std::priority_queue<TileNode*> m_openList;
+	std::priority_queue<TileNode*, std::vector<TileNode*>, std::greater<TileNode*>> m_openList;
+
 public:
 	//We need to override the < > operators to have the comparison for this thing
 	BestSearch()
@@ -563,8 +679,8 @@ public:
 		if (m_map != nullptr)
 		{
 			delete m_map;
-			m_startPoint = nullptr;
-			m_endPoint = nullptr;
+			m_startPoint = { 0, 0 };
+			m_endPoint = { 0, 0 };
 		}
 		m_map = new Map(sourcemap.GetGridSize().x*TILESIZE, sourcemap.GetGridSize().y*TILESIZE);
 		//m_map = &sourcemap;
@@ -599,7 +715,114 @@ public:
 	}
 	void Search(sf::RenderWindow* window)
 	{
-		//Render(window);
+		m_backtracklist.clear();
+		//Starts the OpenList and inserts starting point as the first node in the list
+		while (!m_openList.empty())
+		{
+			m_openList.pop();
+		}
+		PATHSTATE state = PATHSTATE::SEARCHING;
+		m_openList.push(&m_map->GetTile(m_startPoint / TILESIZE));
+		while (PATHSTATE::SEARCHING == state)
+		{
+			//state will continue searching until it realizes its unable to get there
+			//or actually got there
+			if (!m_openList.empty())
+			{
+				m_node = m_openList.top();
+				m_openList.pop();
+
+				if (m_node->m_tilePosition == m_endPoint)
+				{
+					state = PATHSTATE::FINISHED;
+					break;
+				}
+				XVECTOR2 temp;
+				//EAST NODE
+				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.y = m_node->m_tilePosition.y;
+				if (temp.x < m_map->GetGridSize().x*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//EAST SOUTH
+				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				if (temp.x < m_map->GetGridSize().x*TILESIZE &&
+					temp.y < m_map->GetGridSize().y*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//SOUTH NODE
+				temp.x = m_node->m_tilePosition.x;
+				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				if (temp.y < m_map->GetGridSize().y*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//SOUTH WEST
+				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				if (temp.x >= 0 &&
+					temp.y < m_map->GetGridSize().y*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//WEST NODE
+				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.y = m_node->m_tilePosition.y;
+				if (temp.x >= 0)
+				{
+					CheckNode(temp);
+				}
+				//NORTH WEST
+				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				if (temp.x >= 0 &&
+					temp.y >= 0)
+				{
+					CheckNode(temp);
+				}
+				//NORTH NODE
+				temp.x = m_node->m_tilePosition.x;
+				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				if (temp.y >= 0)
+				{
+					CheckNode(temp);
+				}
+				//NORTH EAST
+				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				if (temp.x < m_map->GetGridSize().x *TILESIZE &&
+					temp.y >= 0)
+				{
+					CheckNode(temp);
+				}
+				state = PATHSTATE::SEARCHING;
+			}
+			else state = PATHSTATE::FAILED;
+			//Render(window);
+		}
+		if (state == PATHSTATE::FAILED)
+		{
+			//We return an error saying that the object is unable to get to the ending
+			printf("OH NO! A FUCK UP!\n");
+		}
+		else if (state == PATHSTATE::FINISHED)
+		{
+			//We make backtracking
+			printf("WE FOUND IT BOIS!\n");
+			while (m_node->m_parent != nullptr)
+			{
+				m_backtracklist.push_back(m_node);
+				m_node = m_node->m_parent;
+			}
+			printf("WE BACKTRACKED BOIS!\n");
+			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
+#ifdef PULLSTRING
+			PullString();
+#endif
+		}
 	}
 	void CheckNode(const XVECTOR2 pos)
 	{
@@ -607,7 +830,7 @@ public:
 		{
 			return;
 		}
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost =
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost =
 			(int)XVEC2SqrSum(pos, m_endPoint);
 		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
 		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
@@ -620,7 +843,7 @@ public:
 class Astar : public PathFinder
 {
 private:
-	std::priority_queue<TileNode*> m_openList;
+	std::priority_queue<TileNode*,std::vector<TileNode*>,std::greater<TileNode*>> m_openList;
 public:
 	Astar()
 	{
@@ -636,8 +859,8 @@ public:
 		if (m_map != nullptr)
 		{
 			delete m_map;
-			m_startPoint = nullptr;
-			m_endPoint = nullptr;
+			m_startPoint = { 0, 0 };
+			m_endPoint = { 0, 0 };
 		}
 		m_map = new Map(sourcemap.GetGridSize().x*TILESIZE, sourcemap.GetGridSize().y*TILESIZE);
 		//m_map = &sourcemap;
@@ -665,7 +888,114 @@ public:
 	}
 	void Search(sf::RenderWindow* window)
 	{
-		//Render(window);
+		m_backtracklist.clear();
+		//Starts the OpenList and inserts starting point as the first node in the list
+		while (!m_openList.empty())
+		{
+			m_openList.pop();
+		}
+		PATHSTATE state = PATHSTATE::SEARCHING;
+		m_openList.push(&m_map->GetTile(m_startPoint / TILESIZE));
+		while (PATHSTATE::SEARCHING == state)
+		{
+			//state will continue searching until it realizes its unable to get there
+			//or actually got there
+			if (!m_openList.empty())
+			{
+				m_node = m_openList.top();
+				m_openList.pop();
+
+				if (m_node->m_tilePosition == m_endPoint)
+				{
+					state = PATHSTATE::FINISHED;
+					break;
+				}
+				XVECTOR2 temp;
+				//EAST NODE
+				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.y = m_node->m_tilePosition.y;
+				if (temp.x < m_map->GetGridSize().x*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//EAST SOUTH
+				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				if (temp.x < m_map->GetGridSize().x*TILESIZE &&
+					temp.y < m_map->GetGridSize().y*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//SOUTH NODE
+				temp.x = m_node->m_tilePosition.x;
+				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				if (temp.y < m_map->GetGridSize().y*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//SOUTH WEST
+				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				if (temp.x >= 0 &&
+					temp.y < m_map->GetGridSize().y*TILESIZE)
+				{
+					CheckNode(temp);
+				}
+				//WEST NODE
+				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.y = m_node->m_tilePosition.y;
+				if (temp.x >= 0)
+				{
+					CheckNode(temp);
+				}
+				//NORTH WEST
+				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				if (temp.x >= 0 &&
+					temp.y >= 0)
+				{
+					CheckNode(temp);
+				}
+				//NORTH NODE
+				temp.x = m_node->m_tilePosition.x;
+				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				if (temp.y >= 0)
+				{
+					CheckNode(temp);
+				}
+				//NORTH EAST
+				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				if (temp.x < m_map->GetGridSize().x *TILESIZE &&
+					temp.y >= 0)
+				{
+					CheckNode(temp);
+				}
+				state = PATHSTATE::SEARCHING;
+			}
+			else state = PATHSTATE::FAILED;
+			//Render(window);
+		}
+		if (state == PATHSTATE::FAILED)
+		{
+			//We return an error saying that the object is unable to get to the ending
+			printf("OH NO! A FUCK UP!\n");
+		}
+		else if (state == PATHSTATE::FINISHED)
+		{
+			//We make backtracking
+			printf("WE FOUND IT BOIS!\n");
+			while (m_node->m_parent != nullptr)
+			{
+				m_backtracklist.push_back(m_node);
+				m_node = m_node->m_parent;
+			}
+			printf("WE BACKTRACKED BOIS!\n");
+			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
+#ifdef PULLSTRING
+			PullString();
+#endif
+		}
 	}
 	void CheckNode(const XVECTOR2 pos)
 	{
@@ -684,12 +1014,16 @@ public:
 #ifdef SQUARESUM
 		tmpcost = XVEC2SqrSum(pos, m_endPoint);
 #endif
+		tmpcost +=
+			(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost + m_node->m_costsofar);
 		if (m_map->FindTile(pos, TILETYPE::VISITED) && 
 			tmpcost >= m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost) return;
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost = tmpcost;
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost = tmpcost;
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_costsofar = 
+			(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost + m_node->m_costsofar);
 		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
 		if (m_map->FindTile(pos, TILETYPE::VISITED)) return;
+		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
 		m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
 		//m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
 		//m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
