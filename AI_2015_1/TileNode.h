@@ -11,6 +11,7 @@ enum TILETYPE
 	NOTVISITED,
 	FINALPATH
 };
+
 class TileNode
 {
 public:
@@ -28,8 +29,15 @@ public:
 	sf::Color m_tileColor;
 	TILETYPE m_tileType;
 	TileNode* m_parent;
-	bool operator < (const TileNode& ct1) const;
-	bool operator > (const TileNode& ct1) const;
+	bool operator() (const TileNode& lnode, const TileNode& rnode) const;
+	friend bool operator > (const TileNode& ct1, const TileNode& ct2)
+	{
+		return (ct1.m_fCost > ct2.m_fCost);
+	}
+	friend bool operator < (const TileNode& ct1, const TileNode& ct2)
+	{
+		return (ct1.m_fCost < ct2.m_fCost);
+	}
 };
 class CostedTile : public TileNode
 {

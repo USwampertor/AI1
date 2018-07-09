@@ -13,7 +13,7 @@ TileNode::TileNode(XVECTOR2 position, int size)
 	m_tile.setSize(sf::Vector2f(size,size));
 	Set(TILETYPE::NONE);
 	//XVECTOR2 pos = position * m_tileSize;
-	m_tile.setPosition(IDVtoSFML(m_tilePosition));
+	m_tile.setPosition(IDVtoSFML(GridtoPixel(m_tilePosition)));
 	m_parent = nullptr;
 }
 TileNode::~TileNode()
@@ -25,7 +25,7 @@ void TileNode::Set(TILETYPE type)
 	switch (type)
 	{
 	case NONE:
-		m_tileColor = sf::Color::Transparent;
+		m_tileColor = sf::Color::White;
 		cost = 1;
 		break;
 	case START:
@@ -73,11 +73,16 @@ void CostedTile::SetInfo(TileNode* t)
 	m_tileType = t->m_tileType;
 	m_parent = nullptr;
 }
-bool TileNode::operator < (const TileNode& ct1) const
+//bool TileNode::operator < (const TileNode& ct1) const
+//{
+//	return this->m_fCost < ct1.m_fCost;
+//}
+//bool TileNode::operator > (const TileNode& ct1) const
+//{
+//	return this->m_fCost > ct1.m_fCost;
+//}
+
+bool TileNode::operator() (const TileNode& lnode, const TileNode& rnode) const
 {
-	return m_fCost < ct1.m_fCost;
-}
-bool TileNode::operator > (const TileNode& ct1) const
-{
-	return m_fCost < ct1.m_fCost;
+	return lnode.m_fCost > rnode.m_fCost;
 }

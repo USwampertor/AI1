@@ -11,20 +11,17 @@ XVECTOR2 SFMLtoIDV(sf::Vector2f sfmlvector)
 XVECTOR2 GridtoPixel(XVECTOR2 vec)
 {
 	XVECTOR2 tmp = vec;
-	tmp.x += 1.0f; tmp.y += 1.0f;
 	return tmp * TILESIZE;
 }
 XVECTOR2 PixeltoGrid(XVECTOR2 vec)
 {
-	XVECTOR2 tmp = vec;
-	tmp.x = tmp.x - (int)tmp.x % TILESIZE;
-	tmp.y = tmp.y - (int)tmp.y % TILESIZE;
+	XVECTOR2 tmp;
+	tmp.x = (((int)vec.x - (int)vec.x % TILESIZE)/TILESIZE);
+	tmp.y = (((int)vec.y - (int)vec.y % TILESIZE)/TILESIZE);
 	return tmp;
 }
 sf::String ReturnString(XVECTOR2 vec)
 {
-	//sf::String x = std::to_string((int)vec.x);	
-	//sf::String y = std::to_string((int)vec.y);
 	sf::String tmp = (std::to_string((int)vec.x) + ", " + std::to_string((int)vec.y));
 	return tmp;
 }

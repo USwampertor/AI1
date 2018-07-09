@@ -6,8 +6,8 @@
 #include "Map.h"
 #define _PULLSTRING
 #define MANHATTAN
-//#define EUCLIDEAN
-//#define SQUARESUM
+#define _EUCLIDEAN
+#define _SQUARESUM
 
 //BASE FOR PATHFINDING ALGORITHMS
 enum class PATHSTATE
@@ -61,20 +61,7 @@ public:
 			}
 		}
 	}
-	void Render(sf::RenderWindow* window)
-	{
-		//DEPRECATED SHIT, DONT USE IT!
-		if (this->m_map != nullptr)
-		{
-			for (int i = 0; i < m_map->GetGridSize().x; ++i)
-			{
-				for (int j = 0; j < m_map->GetGridSize().y; ++j)
-				{
-					window->draw(m_map->m_grid[i][j]->m_tile);
-				}
-			}
-		}
-	}
+	virtual void Render(sf::RenderWindow* window) = 0;
 	void PullString()
 	{
 		std::vector<TileNode*> temp;
@@ -144,6 +131,7 @@ public:
 	virtual void CheckNode(const XVECTOR2 pos) = 0;
 };
 //BFS ALGORITHM
+
 class BFS : public PathFinder
 {
 private:
@@ -199,7 +187,7 @@ public:
 			m_openList.pop();
 		}
 		PATHSTATE state = PATHSTATE::SEARCHING;
-		m_openList.push(&m_map->GetTile(m_startPoint/TILESIZE));
+		m_openList.push(&m_map->GetTile(m_startPoint));
 		while (PATHSTATE::SEARCHING == state)
 		{
 			//state will continue searching until it realizes its unable to get there
@@ -216,45 +204,45 @@ public:
 				}
 				XVECTOR2 temp;
 				//EAST NODE
-				temp.x = m_node->m_tilePosition.x + TILESIZE; 
+				temp.x = m_node->m_tilePosition.x + 1; 
 				temp.y = m_node->m_tilePosition.y;
-				if (temp.x < m_map->GetGridSize().x*TILESIZE)
+				if (temp.x < m_map->GetGridSize().x)
 				{
 					CheckNode(temp);
 				}
 				//EAST SOUTH
-				temp.x = m_node->m_tilePosition.x + TILESIZE; 
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
-				if (temp.x < m_map->GetGridSize().x*TILESIZE && 
-					temp.y < m_map->GetGridSize().y*TILESIZE)
+				temp.x = m_node->m_tilePosition.x + 1; 
+				temp.y = m_node->m_tilePosition.y + 1;
+				if (temp.x < m_map->GetGridSize().x && 
+					temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//SOUTH NODE
 				temp.x = m_node->m_tilePosition.x; 
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
-				if (temp.y < m_map->GetGridSize().y*TILESIZE)
+				temp.y = m_node->m_tilePosition.y + 1;
+				if (temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//SOUTH WEST
-				temp.x = m_node->m_tilePosition.x - TILESIZE; 
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1; 
+				temp.y = m_node->m_tilePosition.y + 1;
 				if (temp.x >= 0 && 
-					temp.y < m_map->GetGridSize().y*TILESIZE)
+					temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//WEST NODE
-				temp.x = m_node->m_tilePosition.x - TILESIZE; 
+				temp.x = m_node->m_tilePosition.x - 1; 
 				temp.y = m_node->m_tilePosition.y;
 				if (temp.x >= 0)
 				{
 					CheckNode(temp);
 				}
 				//NORTH WEST
-				temp.x = m_node->m_tilePosition.x - TILESIZE; 
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1; 
+				temp.y = m_node->m_tilePosition.y - 1;
 				if (temp.x >= 0 && 
 					temp.y >= 0)
 				{
@@ -262,15 +250,15 @@ public:
 				}
 				//NORTH NODE
 				temp.x = m_node->m_tilePosition.x; 
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				temp.y = m_node->m_tilePosition.y - 1;
 				if (temp.y >= 0)
 				{
 					CheckNode(temp);
 				}
 				//NORTH EAST
-				temp.x = m_node->m_tilePosition.x + TILESIZE; 
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
-				if (temp.x < m_map->GetGridSize().x *TILESIZE && 
+				temp.x = m_node->m_tilePosition.x + 1; 
+				temp.y = m_node->m_tilePosition.y - 1;
+				if (temp.x < m_map->GetGridSize().x && 
 					temp.y >= 0)
 				{
 					CheckNode(temp);
@@ -307,12 +295,16 @@ public:
 		{
 			return;
 		}
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
-		m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
+		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
+		m_map->m_grid[pos.x][pos.y]->m_parent = m_node;
+		m_openList.push(m_map->m_grid[pos.x][pos.y]);
 	}
-
+	void Render(sf::RenderWindow* window)
+	{
+		window->draw(m_openList.front()->m_tile);
+	}
 };
+
 //DFS ALGORITHM
 class DFS : public PathFinder
 {
@@ -369,7 +361,7 @@ public:
 			m_openList.pop();
 		}
 		PATHSTATE state = PATHSTATE::SEARCHING;
-		m_openList.push(&m_map->GetTile(m_startPoint / TILESIZE));
+		m_openList.push(&m_map->GetTile(m_startPoint));
 		while (PATHSTATE::SEARCHING == state)
 		{
 			//state will continue searching until it realizes its unable to get there
@@ -386,45 +378,45 @@ public:
 				}
 				XVECTOR2 temp;
 				//EAST NODE
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.x = m_node->m_tilePosition.x + 1;
 				temp.y = m_node->m_tilePosition.y;
-				if (temp.x < m_map->GetGridSize().x*TILESIZE)
+				if (temp.x < m_map->GetGridSize().x)
 				{
 					CheckNode(temp);
 				}
 				//EAST SOUTH
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
-				if (temp.x < m_map->GetGridSize().x*TILESIZE &&
-					temp.y < m_map->GetGridSize().y*TILESIZE)
+				temp.x = m_node->m_tilePosition.x + 1;
+				temp.y = m_node->m_tilePosition.y + 1;
+				if (temp.x < m_map->GetGridSize().x &&
+					temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//SOUTH NODE
 				temp.x = m_node->m_tilePosition.x;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
-				if (temp.y < m_map->GetGridSize().y*TILESIZE)
+				temp.y = m_node->m_tilePosition.y + 1;
+				if (temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//SOUTH WEST
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
+				temp.y = m_node->m_tilePosition.y + 1;
 				if (temp.x >= 0 &&
-					temp.y < m_map->GetGridSize().y*TILESIZE)
+					temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//WEST NODE
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
 				temp.y = m_node->m_tilePosition.y;
 				if (temp.x >= 0)
 				{
 					CheckNode(temp);
 				}
 				//NORTH WEST
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
+				temp.y = m_node->m_tilePosition.y - 1;
 				if (temp.x >= 0 &&
 					temp.y >= 0)
 				{
@@ -432,15 +424,15 @@ public:
 				}
 				//NORTH NODE
 				temp.x = m_node->m_tilePosition.x;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				temp.y = m_node->m_tilePosition.y - 1;
 				if (temp.y >= 0)
 				{
 					CheckNode(temp);
 				}
 				//NORTH EAST
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
-				if (temp.x < m_map->GetGridSize().x *TILESIZE &&
+				temp.x = m_node->m_tilePosition.x + 1;
+				temp.y = m_node->m_tilePosition.y - 1;
+				if (temp.x < m_map->GetGridSize().x &&
 					temp.y >= 0)
 				{
 					CheckNode(temp);
@@ -477,16 +469,21 @@ public:
 		{
 			return;
 		}
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
-		m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
+		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
+		m_map->m_grid[pos.x][pos.y]->m_parent = m_node;
+		m_openList.push(m_map->m_grid[pos.x][pos.y]);
+	}
+	void Render(sf::RenderWindow* window)
+	{
+
 	}
 };
+
 //DIJKSTRA ALGORITHM
 class Dijkstra : public PathFinder
 {
 private:
-	std::priority_queue<TileNode*,std::vector<TileNode*>,std::less<TileNode*>> m_openList;
+	std::priority_queue<TileNode*,std::vector<TileNode*>,std::greater<TileNode*>> m_openList;
 public:
 	Dijkstra()
 	{
@@ -538,7 +535,7 @@ public:
 			m_openList.pop();
 		}
 		PATHSTATE state = PATHSTATE::SEARCHING;
-		m_openList.push(&m_map->GetTile(m_startPoint / TILESIZE));
+		m_openList.push(&m_map->GetTile(m_startPoint));
 		while (PATHSTATE::SEARCHING == state)
 		{
 			//state will continue searching until it realizes its unable to get there
@@ -555,45 +552,45 @@ public:
 				}
 				XVECTOR2 temp;
 				//EAST NODE
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.x = m_node->m_tilePosition.x + 1;
 				temp.y = m_node->m_tilePosition.y;
-				if (temp.x < m_map->GetGridSize().x*TILESIZE)
+				if (temp.x < m_map->GetGridSize().x)
 				{
 					CheckNode(temp);
 				}
 				//EAST SOUTH
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
-				if (temp.x < m_map->GetGridSize().x*TILESIZE &&
-					temp.y < m_map->GetGridSize().y*TILESIZE)
+				temp.x = m_node->m_tilePosition.x + 1;
+				temp.y = m_node->m_tilePosition.y + 1;
+				if (temp.x < m_map->GetGridSize().x &&
+					temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//SOUTH NODE
 				temp.x = m_node->m_tilePosition.x;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
-				if (temp.y < m_map->GetGridSize().y*TILESIZE)
+				temp.y = m_node->m_tilePosition.y + 1;
+				if (temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//SOUTH WEST
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
+				temp.y = m_node->m_tilePosition.y + 1;
 				if (temp.x >= 0 &&
-					temp.y < m_map->GetGridSize().y*TILESIZE)
+					temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//WEST NODE
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
 				temp.y = m_node->m_tilePosition.y;
 				if (temp.x >= 0)
 				{
 					CheckNode(temp);
 				}
 				//NORTH WEST
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
+				temp.y = m_node->m_tilePosition.y - 1;
 				if (temp.x >= 0 &&
 					temp.y >= 0)
 				{
@@ -601,15 +598,15 @@ public:
 				}
 				//NORTH NODE
 				temp.x = m_node->m_tilePosition.x;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				temp.y = m_node->m_tilePosition.y - 1;
 				if (temp.y >= 0)
 				{
 					CheckNode(temp);
 				}
 				//NORTH EAST
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
-				if (temp.x < m_map->GetGridSize().x *TILESIZE &&
+				temp.x = m_node->m_tilePosition.x + 1;
+				temp.y = m_node->m_tilePosition.y - 1;
+				if (temp.x < m_map->GetGridSize().x &&
 					temp.y >= 0)
 				{
 					CheckNode(temp);
@@ -617,7 +614,7 @@ public:
 				state = PATHSTATE::SEARCHING;
 			}
 			else state = PATHSTATE::FAILED;
-			//Render(window);
+			Render(window);
 		}
 		if (state == PATHSTATE::FAILED)
 		{
@@ -642,21 +639,26 @@ public:
 	}
 	void CheckNode(const XVECTOR2 pos)
 	{
-		if (m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost >= OBSTACLECOST||
-			(m_node->m_fCost + m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost >= 
-			m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost &&
+		if (m_map->m_grid[pos.x][pos.y]->m_fCost >= OBSTACLECOST||
+			(m_node->m_fCost + m_map->m_grid[pos.x][pos.y]->cost >= 
+			m_map->m_grid[pos.x][pos.y]->m_fCost &&
 				m_map->FindTile(pos, TILETYPE::VISITED)))
 		{
 			return;
 		}
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost = 
-			m_node->m_fCost + m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost;
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
+		m_map->m_grid[pos.x][pos.y]->m_fCost = 
+			m_node->m_fCost + m_map->m_grid[pos.x][pos.y]->cost;
+		m_map->m_grid[pos.x][pos.y]->m_parent = m_node;
 		if (m_map->FindTile(pos, TILETYPE::VISITED))return;
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
-		m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
+		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
+		m_openList.push(m_map->m_grid[pos.x][pos.y]);
+	}
+	void Render(sf::RenderWindow* window)
+	{
+
 	}
 };
+
 //BESTSEARCH ALGORITHM
 class BestSearch : public PathFinder
 {
@@ -722,7 +724,7 @@ public:
 			m_openList.pop();
 		}
 		PATHSTATE state = PATHSTATE::SEARCHING;
-		m_openList.push(&m_map->GetTile(m_startPoint / TILESIZE));
+		m_openList.push(&m_map->GetTile(m_startPoint));
 		while (PATHSTATE::SEARCHING == state)
 		{
 			//state will continue searching until it realizes its unable to get there
@@ -739,45 +741,45 @@ public:
 				}
 				XVECTOR2 temp;
 				//EAST NODE
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.x = m_node->m_tilePosition.x + 1;
 				temp.y = m_node->m_tilePosition.y;
-				if (temp.x < m_map->GetGridSize().x*TILESIZE)
+				if (temp.x < m_map->GetGridSize().x)
 				{
 					CheckNode(temp);
 				}
 				//EAST SOUTH
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
-				if (temp.x < m_map->GetGridSize().x*TILESIZE &&
-					temp.y < m_map->GetGridSize().y*TILESIZE)
+				temp.x = m_node->m_tilePosition.x + 1;
+				temp.y = m_node->m_tilePosition.y + 1;
+				if (temp.x < m_map->GetGridSize().x &&
+					temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//SOUTH NODE
 				temp.x = m_node->m_tilePosition.x;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
-				if (temp.y < m_map->GetGridSize().y*TILESIZE)
+				temp.y = m_node->m_tilePosition.y + 1;
+				if (temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//SOUTH WEST
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
+				temp.y = m_node->m_tilePosition.y + 1;
 				if (temp.x >= 0 &&
-					temp.y < m_map->GetGridSize().y*TILESIZE)
+					temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//WEST NODE
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
 				temp.y = m_node->m_tilePosition.y;
 				if (temp.x >= 0)
 				{
 					CheckNode(temp);
 				}
 				//NORTH WEST
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
+				temp.y = m_node->m_tilePosition.y - 1;
 				if (temp.x >= 0 &&
 					temp.y >= 0)
 				{
@@ -785,15 +787,15 @@ public:
 				}
 				//NORTH NODE
 				temp.x = m_node->m_tilePosition.x;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				temp.y = m_node->m_tilePosition.y - 1;
 				if (temp.y >= 0)
 				{
 					CheckNode(temp);
 				}
 				//NORTH EAST
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
-				if (temp.x < m_map->GetGridSize().x *TILESIZE &&
+				temp.x = m_node->m_tilePosition.x + 1;
+				temp.y = m_node->m_tilePosition.y - 1;
+				if (temp.x < m_map->GetGridSize().x &&
 					temp.y >= 0)
 				{
 					CheckNode(temp);
@@ -830,13 +832,17 @@ public:
 		{
 			return;
 		}
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost =
+		m_map->m_grid[pos.x][pos.y]->m_fCost =
 			(int)XVEC2SqrSum(pos, m_endPoint);
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
-		m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
+		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
+		m_map->m_grid[pos.x][pos.y]->m_parent = m_node;
+		m_openList.push(m_map->m_grid[pos.x][pos.y]);
 		//m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
 		//m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
+	}
+	void Render(sf::RenderWindow* window)
+	{
+
 	}
 };
 //A STAR ALGORITHM
@@ -895,7 +901,7 @@ public:
 			m_openList.pop();
 		}
 		PATHSTATE state = PATHSTATE::SEARCHING;
-		m_openList.push(&m_map->GetTile(m_startPoint / TILESIZE));
+		m_openList.push(&m_map->GetTile(m_startPoint));
 		while (PATHSTATE::SEARCHING == state)
 		{
 			//state will continue searching until it realizes its unable to get there
@@ -912,45 +918,45 @@ public:
 				}
 				XVECTOR2 temp;
 				//EAST NODE
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
+				temp.x = m_node->m_tilePosition.x + 1;
 				temp.y = m_node->m_tilePosition.y;
-				if (temp.x < m_map->GetGridSize().x*TILESIZE)
+				if (temp.x < m_map->GetGridSize().x)
 				{
 					CheckNode(temp);
 				}
 				//EAST SOUTH
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
-				if (temp.x < m_map->GetGridSize().x*TILESIZE &&
-					temp.y < m_map->GetGridSize().y*TILESIZE)
+				temp.x = m_node->m_tilePosition.x + 1;
+				temp.y = m_node->m_tilePosition.y + 1;
+				if (temp.x < m_map->GetGridSize().x &&
+					temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//SOUTH NODE
 				temp.x = m_node->m_tilePosition.x;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
-				if (temp.y < m_map->GetGridSize().y*TILESIZE)
+				temp.y = m_node->m_tilePosition.y + 1;
+				if (temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//SOUTH WEST
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
-				temp.y = m_node->m_tilePosition.y + TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
+				temp.y = m_node->m_tilePosition.y + 1;
 				if (temp.x >= 0 &&
-					temp.y < m_map->GetGridSize().y*TILESIZE)
+					temp.y < m_map->GetGridSize().y)
 				{
 					CheckNode(temp);
 				}
 				//WEST NODE
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
 				temp.y = m_node->m_tilePosition.y;
 				if (temp.x >= 0)
 				{
 					CheckNode(temp);
 				}
 				//NORTH WEST
-				temp.x = m_node->m_tilePosition.x - TILESIZE;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				temp.x = m_node->m_tilePosition.x - 1;
+				temp.y = m_node->m_tilePosition.y - 1;
 				if (temp.x >= 0 &&
 					temp.y >= 0)
 				{
@@ -958,15 +964,15 @@ public:
 				}
 				//NORTH NODE
 				temp.x = m_node->m_tilePosition.x;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
+				temp.y = m_node->m_tilePosition.y - 1;
 				if (temp.y >= 0)
 				{
 					CheckNode(temp);
 				}
 				//NORTH EAST
-				temp.x = m_node->m_tilePosition.x + TILESIZE;
-				temp.y = m_node->m_tilePosition.y - TILESIZE;
-				if (temp.x < m_map->GetGridSize().x *TILESIZE &&
+				temp.x = m_node->m_tilePosition.x + 1;
+				temp.y = m_node->m_tilePosition.y - 1;
+				if (temp.x < m_map->GetGridSize().x &&
 					temp.y >= 0)
 				{
 					CheckNode(temp);
@@ -1015,17 +1021,21 @@ public:
 		tmpcost = XVEC2SqrSum(pos, m_endPoint);
 #endif
 		tmpcost +=
-			(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost + m_node->m_costsofar);
+			(m_map->m_grid[pos.x][pos.y]->cost + m_node->m_costsofar);
 		if (m_map->FindTile(pos, TILETYPE::VISITED) && 
-			tmpcost >= m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost) return;
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_fCost = tmpcost;
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_costsofar = 
-			(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->cost + m_node->m_costsofar);
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
+			tmpcost >= m_map->m_grid[pos.x][pos.y]->cost) return;
+		m_map->m_grid[pos.x][pos.y]->m_fCost = tmpcost;
+		m_map->m_grid[pos.x][pos.y]->m_costsofar = 
+			(m_map->m_grid[pos.x][pos.y]->cost + m_node->m_costsofar);
+		m_map->m_grid[pos.x][pos.y]->m_parent = m_node;
 		if (m_map->FindTile(pos, TILETYPE::VISITED)) return;
-		m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->Set(TILETYPE::VISITED);
-		m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
+		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
+		m_openList.push(m_map->m_grid[pos.x][pos.y]);
 		//m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
 		//m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
+	}
+	void Render(sf::RenderWindow* window)
+	{
+
 	}
 };

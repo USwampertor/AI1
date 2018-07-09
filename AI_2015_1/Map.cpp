@@ -32,7 +32,7 @@ void Map::Initialize(int gridwidth, int gridheight)
 		//m_grid[i] = new TileNode[gridheight];
 		for (int j = 0; j < m_gridSize.y; ++j)
 		{
-			TileNode* t = new TileNode(XVECTOR2(i*TILESIZE, j*TILESIZE), TILESIZE);
+			TileNode* t = new TileNode(XVECTOR2(i, j), TILESIZE);
 			//TileNode* t = new TileNode(XVECTOR2(i, j), TILESIZE);
 			m_grid[i][j] = t;
 		}
@@ -87,12 +87,12 @@ std::list<XVECTOR2> Map::GetObstacleList()
 }
 void Map::SetTile(XVECTOR2 vec, TILETYPE type)
 {
-	vec /= TILESIZE;
+	//vec /= TILESIZE;
 	(m_grid[vec.x][vec.y])->Set(type);
 }
 bool Map::FindTile(XVECTOR2 vec, TILETYPE type)
 {
-	vec /= TILESIZE;
+	//vec /= TILESIZE;
 	return (m_grid[vec.x][vec.y])->Get() == type;
 }
 void Map::Render(sf::RenderWindow* window)
