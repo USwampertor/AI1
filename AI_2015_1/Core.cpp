@@ -28,18 +28,34 @@ bool Core::Initialize()
 	m_startingPoint.setCharacterSize(8);
 	m_startingPoint.setFillColor(sf::Color::Black);
 	m_startingPoint.setPosition(sf::Vector2f(850, 40));
-	m_startingPoint.setString("NAN"); 
+	m_startingPoint.setString("START"); 
 	m_endingPoint.setFont(m_font);
 	m_endingPoint.setCharacterSize(8);
 	m_endingPoint.setFillColor(sf::Color::Black);
 	m_endingPoint.setPosition(sf::Vector2f(850, 60));
-	m_endingPoint.setString("NAN");
+	m_endingPoint.setString("FINISH");
+	m_heuristicText.setFont(m_font);
+	m_heuristicText.setCharacterSize(8);
+	m_heuristicText.setFillColor(sf::Color::Black);
+	m_heuristicText.setPosition(sf::Vector2f(850, 80));
+	m_heuristicText.setString("MANHATTAN");
+	m_pullstringText.setFont(m_font);
+	m_pullstringText.setCharacterSize(8);
+	m_pullstringText.setFillColor(sf::Color::Black);
+	m_pullstringText.setPosition(sf::Vector2f(850, 100));
+	m_pullstringText.setString("PULLSTRING");
 	m_startRectangle.setSize(sf::Vector2f(TILESIZE, TILESIZE));
 	m_startRectangle.setFillColor(sf::Color::Red);
 	m_startRectangle.setPosition(sf::Vector2f(820, 40));
 	m_endingRectangle.setSize(sf::Vector2f(TILESIZE, TILESIZE));
 	m_endingRectangle.setFillColor(sf::Color::Blue);
 	m_endingRectangle.setPosition(sf::Vector2f(820, 60));
+	m_heuristicRectangle.setSize(sf::Vector2f(TILESIZE, TILESIZE));
+	m_heuristicRectangle.setFillColor(sf::Color::Cyan);
+	m_heuristicRectangle.setPosition(sf::Vector2f(820, 80));
+	m_pullstringRectangle.setSize(sf::Vector2f(TILESIZE, TILESIZE));
+	m_pullstringRectangle.setFillColor(sf::Color::Black);
+	m_pullstringRectangle.setPosition(sf::Vector2f(820, 100));
 	m_pathfinder = nullptr;
 	return true;
 }
@@ -134,6 +150,26 @@ void Core::KeyBoardEventHander(sf::Event event)
 			/*if (InitPathfinder());*/ m_searching = 1;
 		}
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num6))
+	{
+		m_heuristic = HEURISTIC::H_EUCLIDEAN;
+		if (m_pathfinder != nullptr) m_pathfinder->m_activeHeuristic = m_heuristic;
+		m_heuristicText.setString("EUCLIDEAN");
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num7))
+	{
+		m_heuristic = HEURISTIC::H_MANHATTAN;
+		if (m_pathfinder != nullptr) m_pathfinder->m_activeHeuristic = m_heuristic;
+		m_heuristicText.setString("MANHATTAN");
+
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num8))
+	{
+		m_heuristic = HEURISTIC::H_SQUARESUM;
+		if (m_pathfinder != nullptr) m_pathfinder->m_activeHeuristic = m_heuristic;
+		m_heuristicText.setString("SQUARE SUM");
+
+	}
 }
 void Core::MouseEventHandler(sf::Event event)
 {
@@ -181,6 +217,21 @@ void Core::MouseEventHandler(sf::Event event)
 
 		}
 	}
+	else if (PixeltoGrid(XVECTOR2(event.mouseButton.x, event.mouseButton.y))*TILESIZE==XVECTOR2(820,100))
+	{
+		if (!m_pullstring)
+		{
+			m_pullstringRectangle.setFillColor(sf::Color::Green);
+			m_pullstring = true;
+			if (m_pathfinder != nullptr) m_pathfinder->m_usingPullstring = true;
+		}
+		else
+		{
+			m_pullstringRectangle.setFillColor(sf::Color::Black);
+			m_pullstring = false;
+			if (m_pathfinder != nullptr) m_pathfinder->m_usingPullstring = false;
+		}
+	}
 }
 void Core::Draw(sf::RenderWindow* window)
 {
@@ -191,8 +242,12 @@ void Core::Draw(sf::RenderWindow* window)
 	window->draw(m_selectedPathfinder);
 	window->draw(m_startingPoint);
 	window->draw(m_endingPoint);
+	window->draw(m_heuristicText);
+	window->draw(m_pullstringText);
 	window->draw(m_startRectangle);
 	window->draw(m_endingRectangle);
+	window->draw(m_heuristicRectangle);
+	window->draw(m_pullstringRectangle);
 	//sf::RectangleShape beggining(sf::Vector2f(10, 10));
 	//beggining.setPosition(IDVtoSFML(m_gameMap.GetBeggining()));
 	//beggining.setFillColor(sf::Color::Blue);
@@ -222,19 +277,19 @@ bool Core::SetPathfinder()
 		switch (m_pathfindertype)
 		{
 		case 1:
-			m_pathfinder = new BFS();
+			m_pathfinder = new BFS(m_pullstring, m_heuristic);
 			break;
 		case 2:
-			m_pathfinder = new DFS();
+			m_pathfinder = new DFS(m_pullstring, m_heuristic);
 			break;
 		case 3:
-			m_pathfinder = new Dijkstra();
+			m_pathfinder = new Dijkstra(m_pullstring, m_heuristic);
 			break;
 		case 4:
-			m_pathfinder = new BestSearch();
+			m_pathfinder = new BestSearch(m_pullstring, m_heuristic);
 			break;
 		case 5:
-			m_pathfinder = new Astar();
+			m_pathfinder = new Astar(m_pullstring, m_heuristic);
 			break;
 		default:
 			m_selectedPathfinder.setString("Don't really know \n how you got here");

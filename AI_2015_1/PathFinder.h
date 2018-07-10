@@ -4,7 +4,7 @@
 #include <stack>
 #include <list>
 #include "Map.h"
-#define _PULLSTRING
+#define PULLSTRING
 #define MANHATTAN
 #define _EUCLIDEAN
 #define _SQUARESUM
@@ -17,6 +17,19 @@ enum class PATHSTATE
 	FINISHED,
 	FAILED
 };
+enum class HEURISTIC
+{
+	H_MANHATTAN = 0,
+	H_EUCLIDEAN,
+	H_SQUARESUM
+};
+struct NodeComparator : public std::binary_function<TileNode*, TileNode*, bool>
+{
+	bool operator()(const TileNode* leftNode, const TileNode* rightNode) const 
+	{
+		return leftNode->m_fCost > rightNode->m_fCost;
+	}
+};
 class PathFinder
 {
 public:
@@ -24,21 +37,28 @@ public:
 	Map* m_map;
 	XVECTOR2 m_startPoint, m_endPoint;
 	std::vector<TileNode*> m_backtracklist;
+	HEURISTIC m_activeHeuristic = HEURISTIC::H_MANHATTAN;
+	bool m_usingPullstring = false;
 	PathFinder()
 	{
 		m_map = nullptr;
+	}
+	PathFinder(bool pullstring, HEURISTIC h)
+	{
+		m_usingPullstring = pullstring;
+		m_activeHeuristic = h;
 	}
 	~PathFinder()
 	{
 		if (m_map != nullptr)
 		{
 			for (int i = 0; i < m_map->GetGridSize().x; ++i)
-		{
-			for (int j = 0; j < m_map->GetGridSize().y; ++j)
 			{
-				delete m_map->m_grid[i][j];
+				for (int j = 0; j < m_map->GetGridSize().y; ++j)
+				{
+					delete m_map->m_grid[i][j];
+				}
 			}
-		}
 		}
 	}
 	virtual bool Initialize(Map sourcemap) = 0;
@@ -61,7 +81,10 @@ public:
 			}
 		}
 	}
-	virtual void Render(sf::RenderWindow* window) = 0;
+	void Render(sf::RenderWindow* window)
+	{
+
+	}
 	void PullString()
 	{
 		std::vector<TileNode*> temp;
@@ -71,9 +94,9 @@ public:
 		for (int i = 1; i < m_backtracklist.size(); ++i)
 		{
 			if ((i + 1) >= m_backtracklist.size()) break;
-			newpos = m_backtracklist[i + 1]->m_tilePosition;
+			newpos = m_backtracklist[i]->m_tilePosition;
 			//If we cant get from a to b with a straight line, we put i in the temp
-			if (!Bresenham(actualpos/TILESIZE, newpos/TILESIZE))
+			if (!Bresenham(actualpos, newpos))
 			{
 				temp.push_back(m_backtracklist[i]);
 				actualpos = m_backtracklist[i]->m_tilePosition;
@@ -105,7 +128,7 @@ public:
 				actual.x += 1.0f;
 				actual.x = (int)actual.x % (int)m_map->GetGridSize().x;
 				actual.y = (int)actual.y % (int)m_map->GetGridSize().y;
-				if (m_map->FindTile((actual*TILESIZE), TILETYPE::OBSTACLE)) return false;
+				if (m_map->FindTile((actual), TILETYPE::OBSTACLE)) return false;
 			}
 		}
 		else
@@ -122,7 +145,7 @@ public:
 				actual.y += 1.0f;
 				actual.x = (int)actual.x % (int)m_map->GetGridSize().x;
 				actual.y = (int)actual.y % (int)m_map->GetGridSize().y;
-				if (m_map->FindTile((actual*TILESIZE), TILETYPE::OBSTACLE)) return false;
+				if (m_map->FindTile((actual), TILETYPE::OBSTACLE)) return false;
 			}
 		}
 		return true;
@@ -140,6 +163,11 @@ public:
 	BFS()
 	{
 
+	}
+	BFS(bool pullstring, HEURISTIC h)
+	{
+		m_usingPullstring = pullstring;
+		m_activeHeuristic = h;
 	}
 	~BFS()
 	{
@@ -266,7 +294,7 @@ public:
 				state = PATHSTATE::SEARCHING;
 			}
 			else state = PATHSTATE::FAILED;
-			//Render(window);
+			
 		}
 		if (state == PATHSTATE::FAILED)
 		{
@@ -284,9 +312,9 @@ public:
 			}
 			printf("WE BACKTRACKED BOIS!\n");
 			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
-#ifdef PULLSTRING
-			PullString();
-#endif
+//#ifdef PULLSTRING
+			if(m_usingPullstring) PullString();
+//#endif
 		}
 	}
 	void CheckNode(const XVECTOR2 pos)
@@ -298,10 +326,9 @@ public:
 		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
 		m_map->m_grid[pos.x][pos.y]->m_parent = m_node;
 		m_openList.push(m_map->m_grid[pos.x][pos.y]);
-	}
-	void Render(sf::RenderWindow* window)
-	{
-		window->draw(m_openList.front()->m_tile);
+		//
+		
+
 	}
 };
 
@@ -315,6 +342,11 @@ public:
 	{
 
 	}
+	DFS(bool pullstring, HEURISTIC h)
+	{
+		m_usingPullstring = pullstring;
+		m_activeHeuristic = h;
+	}
 	~DFS()
 	{
 
@@ -327,180 +359,6 @@ public:
 			delete m_map;
 			m_startPoint = { 0,0 };
 			m_endPoint = { 0,0 };
-		}
-		m_map = new Map(sourcemap.GetGridSize().x*TILESIZE, sourcemap.GetGridSize().y*TILESIZE);
-		//m_map = &sourcemap;
-		for (int i = 0; i < m_map->GetGridSize().x; ++i)
-		{
-			for (int j = 0; j < m_map->GetGridSize().y; ++j)
-			{
-				TileNode* t = new TileNode(sourcemap.GetTile(XVECTOR2(i, j)));
-				if (t->Get() == TILETYPE::NONE)
-				{
-					t->Set(TILETYPE::NOTVISITED);
-				}
-				m_map->m_grid[i][j] = t;
-				//if (m_map->m_grid[i][j]->Get() != TILETYPE::OBSTACLE &&
-				//	m_map->m_grid[i][j]->Get() != TILETYPE::FINISH &&
-				//	m_map->m_grid[i][j]->Get() != TILETYPE::START)
-				//{
-				//	m_map->m_grid[i][j]->Set(TILETYPE::NOTVISITED);
-				//}
-			}
-		}
-		SetStartingPoint(sourcemap.GetBeggining());
-		SetEndingPoint(sourcemap.GetEnding());
-		return true;
-	}
-	void Search(sf::RenderWindow* window)
-	{
-		m_backtracklist.clear();
-		//Starts the OpenList and inserts starting point as the first node in the list
-		while (!m_openList.empty())
-		{
-			m_openList.pop();
-		}
-		PATHSTATE state = PATHSTATE::SEARCHING;
-		m_openList.push(&m_map->GetTile(m_startPoint));
-		while (PATHSTATE::SEARCHING == state)
-		{
-			//state will continue searching until it realizes its unable to get there
-			//or actually got there
-			if (!m_openList.empty())
-			{
-				m_node = m_openList.top();
-				m_openList.pop();
-
-				if (m_node->m_tilePosition == m_endPoint)
-				{
-					state = PATHSTATE::FINISHED;
-					break;
-				}
-				XVECTOR2 temp;
-				//EAST NODE
-				temp.x = m_node->m_tilePosition.x + 1;
-				temp.y = m_node->m_tilePosition.y;
-				if (temp.x < m_map->GetGridSize().x)
-				{
-					CheckNode(temp);
-				}
-				//EAST SOUTH
-				temp.x = m_node->m_tilePosition.x + 1;
-				temp.y = m_node->m_tilePosition.y + 1;
-				if (temp.x < m_map->GetGridSize().x &&
-					temp.y < m_map->GetGridSize().y)
-				{
-					CheckNode(temp);
-				}
-				//SOUTH NODE
-				temp.x = m_node->m_tilePosition.x;
-				temp.y = m_node->m_tilePosition.y + 1;
-				if (temp.y < m_map->GetGridSize().y)
-				{
-					CheckNode(temp);
-				}
-				//SOUTH WEST
-				temp.x = m_node->m_tilePosition.x - 1;
-				temp.y = m_node->m_tilePosition.y + 1;
-				if (temp.x >= 0 &&
-					temp.y < m_map->GetGridSize().y)
-				{
-					CheckNode(temp);
-				}
-				//WEST NODE
-				temp.x = m_node->m_tilePosition.x - 1;
-				temp.y = m_node->m_tilePosition.y;
-				if (temp.x >= 0)
-				{
-					CheckNode(temp);
-				}
-				//NORTH WEST
-				temp.x = m_node->m_tilePosition.x - 1;
-				temp.y = m_node->m_tilePosition.y - 1;
-				if (temp.x >= 0 &&
-					temp.y >= 0)
-				{
-					CheckNode(temp);
-				}
-				//NORTH NODE
-				temp.x = m_node->m_tilePosition.x;
-				temp.y = m_node->m_tilePosition.y - 1;
-				if (temp.y >= 0)
-				{
-					CheckNode(temp);
-				}
-				//NORTH EAST
-				temp.x = m_node->m_tilePosition.x + 1;
-				temp.y = m_node->m_tilePosition.y - 1;
-				if (temp.x < m_map->GetGridSize().x &&
-					temp.y >= 0)
-				{
-					CheckNode(temp);
-				}
-				state = PATHSTATE::SEARCHING;
-			}
-			else state = PATHSTATE::FAILED;
-			//Render(window);
-		}
-		if (state == PATHSTATE::FAILED)
-		{
-			//We return an error saying that the object is unable to get to the ending
-			printf("OH NO! A FUCK UP!\n");
-		}
-		else if (state == PATHSTATE::FINISHED)
-		{
-			//We make backtracking
-			printf("WE FOUND IT BOIS!\n");
-			while (m_node->m_parent != nullptr)
-			{
-				m_backtracklist.push_back(m_node);
-				m_node = m_node->m_parent;
-			}
-			printf("WE BACKTRACKED BOIS!\n");
-			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
-#ifdef PULLSTRING
-			PullString();
-#endif
-		}
-	}
-	void CheckNode(const XVECTOR2 pos)
-	{
-		if (m_map->FindTile(pos, TILETYPE::OBSTACLE) || m_map->FindTile(pos, TILETYPE::VISITED))
-		{
-			return;
-		}
-		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
-		m_map->m_grid[pos.x][pos.y]->m_parent = m_node;
-		m_openList.push(m_map->m_grid[pos.x][pos.y]);
-	}
-	void Render(sf::RenderWindow* window)
-	{
-
-	}
-};
-
-//DIJKSTRA ALGORITHM
-class Dijkstra : public PathFinder
-{
-private:
-	std::priority_queue<TileNode*,std::vector<TileNode*>,std::greater<TileNode*>> m_openList;
-public:
-	Dijkstra()
-	{
-
-	}
-	~Dijkstra()
-	{
-
-	}
-	bool Initialize(Map sourcemap)
-	{
-		printf("Initializing...\n");
-		if (m_map != nullptr)
-		{
-			delete m_map;
-			m_startPoint = { 0, 0};
-			m_endPoint = { 0, 0 };
 		}
 		m_map = new Map(sourcemap.GetGridSize().x*TILESIZE, sourcemap.GetGridSize().y*TILESIZE);
 		//m_map = &sourcemap;
@@ -632,30 +490,213 @@ public:
 			}
 			printf("WE BACKTRACKED BOIS!\n");
 			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
-#ifdef PULLSTRING
-			PullString();
-#endif
+//#ifdef PULLSTRING
+			if (m_usingPullstring) PullString();
+//#endif
 		}
 	}
 	void CheckNode(const XVECTOR2 pos)
 	{
-		if (m_map->m_grid[pos.x][pos.y]->m_fCost >= OBSTACLECOST||
-			(m_node->m_fCost + m_map->m_grid[pos.x][pos.y]->cost >= 
-			m_map->m_grid[pos.x][pos.y]->m_fCost &&
+		if (m_map->FindTile(pos, TILETYPE::OBSTACLE) || m_map->FindTile(pos, TILETYPE::VISITED))
+		{
+			return;
+		}
+		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
+		m_map->m_grid[pos.x][pos.y]->m_parent = m_node;
+		m_openList.push(m_map->m_grid[pos.x][pos.y]);
+		//
+		
+	}
+};
+
+//DIJKSTRA ALGORITHM
+class Dijkstra : public PathFinder
+{
+	
+private:
+	std::queue<TileNode*> m_openList;
+	std::vector<TileNode*> m_closedList;
+public:
+	Dijkstra()
+	{
+
+	}
+	Dijkstra(bool pullstring, HEURISTIC h)
+	{
+		m_usingPullstring = pullstring;
+		m_activeHeuristic = h;
+	}
+	~Dijkstra()
+	{
+
+	}
+	bool Initialize(Map sourcemap)
+	{
+		printf("Initializing...\n");
+		if (m_map != nullptr)
+		{
+			delete m_map;
+			m_startPoint = { 0, 0};
+			m_endPoint = { 0, 0 };
+		}
+		m_map = new Map(sourcemap.GetGridSize().x*TILESIZE, sourcemap.GetGridSize().y*TILESIZE);
+		//m_map = &sourcemap;
+		for (int i = 0; i < m_map->GetGridSize().x; ++i)
+		{
+			for (int j = 0; j < m_map->GetGridSize().y; ++j)
+			{
+				TileNode* t = new TileNode(sourcemap.GetTile(XVECTOR2(i, j)));
+				if (t->Get() == TILETYPE::NONE)
+				{
+					t->Set(TILETYPE::NOTVISITED);
+				}
+				m_map->m_grid[i][j] = t;
+				//if (m_map->m_grid[i][j]->Get() != TILETYPE::OBSTACLE &&
+				//	m_map->m_grid[i][j]->Get() != TILETYPE::FINISH &&
+				//	m_map->m_grid[i][j]->Get() != TILETYPE::START)
+				//{
+				//	m_map->m_grid[i][j]->Set(TILETYPE::NOTVISITED);
+				//}
+			}
+		}
+		SetStartingPoint(sourcemap.GetBeggining());
+		SetEndingPoint(sourcemap.GetEnding());
+		return true;
+	}
+	void Search(sf::RenderWindow* window)
+	{
+		
+		m_backtracklist.clear();
+		m_closedList.clear();
+		//Starts the OpenList and inserts starting point as the first node in the list
+		while (!m_openList.empty())
+		{
+			m_openList.pop();
+		}
+		PATHSTATE state = PATHSTATE::SEARCHING;
+		m_openList.push(&m_map->GetTile(m_startPoint));
+		//state will continue searching until it realizes its unable to get there
+		//or actually got there
+		while (!m_openList.empty())
+		{
+			m_node = m_openList.front();
+			m_openList.pop();
+
+			XVECTOR2 temp;
+			//EAST NODE
+			temp.x = m_node->m_tilePosition.x + 1;
+			temp.y = m_node->m_tilePosition.y;
+			if (temp.x < m_map->GetGridSize().x)
+			{
+				CheckNode(temp);
+			}
+			//EAST SOUTH
+			temp.x = m_node->m_tilePosition.x + 1;
+			temp.y = m_node->m_tilePosition.y + 1;
+			if (temp.x < m_map->GetGridSize().x &&
+				temp.y < m_map->GetGridSize().y)
+			{
+				CheckNode(temp);
+			}
+			//SOUTH NODE
+			temp.x = m_node->m_tilePosition.x;
+			temp.y = m_node->m_tilePosition.y + 1;
+			if (temp.y < m_map->GetGridSize().y)
+			{
+				CheckNode(temp);
+			}
+			//SOUTH WEST
+			temp.x = m_node->m_tilePosition.x - 1;
+			temp.y = m_node->m_tilePosition.y + 1;
+			if (temp.x >= 0 &&
+				temp.y < m_map->GetGridSize().y)
+			{
+				CheckNode(temp);
+			}
+			//WEST NODE
+			temp.x = m_node->m_tilePosition.x - 1;
+			temp.y = m_node->m_tilePosition.y;
+			if (temp.x >= 0)
+			{
+				CheckNode(temp);
+			}
+			//NORTH WEST
+			temp.x = m_node->m_tilePosition.x - 1;
+			temp.y = m_node->m_tilePosition.y - 1;
+			if (temp.x >= 0 &&
+				temp.y >= 0)
+			{
+				CheckNode(temp);
+			}
+			//NORTH NODE
+			temp.x = m_node->m_tilePosition.x;
+			temp.y = m_node->m_tilePosition.y - 1;
+			if (temp.y >= 0)
+			{
+				CheckNode(temp);
+			}
+			//NORTH EAST
+			temp.x = m_node->m_tilePosition.x + 1;
+			temp.y = m_node->m_tilePosition.y - 1;
+			if (temp.x < m_map->GetGridSize().x &&
+				temp.y >= 0)
+			{
+				CheckNode(temp);
+			}
+
+			m_closedList.push_back(m_node);
+			state = PATHSTATE::SEARCHING;
+		}
+		
+		for (int i = 0; i < m_closedList.size(); ++i)
+		{
+			if (m_closedList[i]->m_tilePosition == m_endPoint)
+			{
+				state = PATHSTATE::FINISHED;
+				m_node = m_closedList[i];
+				break;
+			}
+			state = PATHSTATE::FAILED;
+		}
+		if (state == PATHSTATE::FAILED)
+		{
+			//We return an error saying that the object is unable to get to the ending
+			printf("OH NO! A FUCK UP!\n");
+		}
+		else if (state == PATHSTATE::FINISHED)
+		{
+			//We make backtracking
+			printf("WE FOUND IT BOIS!\n");
+			while (m_node->m_parent != nullptr)
+			{
+				m_backtracklist.push_back(m_node);
+				m_node = m_node->m_parent;
+			}
+			printf("WE BACKTRACKED BOIS!\n");
+			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
+//#ifdef PULLSTRING
+			if (m_usingPullstring) PullString();
+//#endif
+		}
+	}
+	void CheckNode(const XVECTOR2 pos)
+	{
+		if (
+			m_map->m_grid[pos.x][pos.y]->cost >= OBSTACLECOST || ((
+				m_node->m_fCost + m_map->m_grid[pos.x][pos.y]->cost >
+				m_map->m_grid[pos.x][pos.y]->m_fCost) &&
 				m_map->FindTile(pos, TILETYPE::VISITED)))
 		{
 			return;
 		}
 		m_map->m_grid[pos.x][pos.y]->m_fCost = 
-			m_node->m_fCost + m_map->m_grid[pos.x][pos.y]->cost;
+			m_map->m_grid[pos.x][pos.y]->cost + m_node->m_fCost;
 		m_map->m_grid[pos.x][pos.y]->m_parent = m_node;
 		if (m_map->FindTile(pos, TILETYPE::VISITED))return;
 		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
 		m_openList.push(m_map->m_grid[pos.x][pos.y]);
-	}
-	void Render(sf::RenderWindow* window)
-	{
-
+		//
+		
 	}
 };
 
@@ -664,12 +705,17 @@ class BestSearch : public PathFinder
 {
 private:
 	//std::priority_queue<CostedTile*,std::vector<CostedTile*>,LessCost> m_openList;
-	std::priority_queue<TileNode*, std::vector<TileNode*>, std::greater<TileNode*>> m_openList;
+	std::priority_queue<TileNode*, std::vector<TileNode*>, NodeComparator> m_openList;
 
 public:
 	//We need to override the < > operators to have the comparison for this thing
 	BestSearch()
 	{
+	}
+	BestSearch(bool pullstring, HEURISTIC h)
+	{
+		m_usingPullstring = pullstring;
+		m_activeHeuristic = h;
 	}
 	~BestSearch()
 	{
@@ -803,7 +849,7 @@ public:
 				state = PATHSTATE::SEARCHING;
 			}
 			else state = PATHSTATE::FAILED;
-			//Render(window);
+			Render(window);
 		}
 		if (state == PATHSTATE::FAILED)
 		{
@@ -821,9 +867,9 @@ public:
 			}
 			printf("WE BACKTRACKED BOIS!\n");
 			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
-#ifdef PULLSTRING
-			PullString();
-#endif
+//#ifdef PULLSTRING
+			if (m_usingPullstring) PullString();
+//#endif
 		}
 	}
 	void CheckNode(const XVECTOR2 pos)
@@ -837,23 +883,23 @@ public:
 		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
 		m_map->m_grid[pos.x][pos.y]->m_parent = m_node;
 		m_openList.push(m_map->m_grid[pos.x][pos.y]);
-		//m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
-		//m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
-	}
-	void Render(sf::RenderWindow* window)
-	{
-
+		//
 	}
 };
 //A STAR ALGORITHM
 class Astar : public PathFinder
 {
 private:
-	std::priority_queue<TileNode*,std::vector<TileNode*>,std::greater<TileNode*>> m_openList;
+	std::priority_queue<TileNode*,std::vector<TileNode*>, NodeComparator> m_openList;
 public:
 	Astar()
 	{
 
+	}
+	Astar(bool pullstring, HEURISTIC h)
+	{
+		m_usingPullstring = pullstring;
+		m_activeHeuristic = h;
 	}
 	~Astar()
 	{
@@ -980,7 +1026,7 @@ public:
 				state = PATHSTATE::SEARCHING;
 			}
 			else state = PATHSTATE::FAILED;
-			//Render(window);
+			Render(window);
 		}
 		if (state == PATHSTATE::FAILED)
 		{
@@ -998,9 +1044,9 @@ public:
 			}
 			printf("WE BACKTRACKED BOIS!\n");
 			std::reverse(m_backtracklist.begin(), m_backtracklist.end());
-#ifdef PULLSTRING
-			PullString();
-#endif
+//#ifdef PULLSTRING
+			if (m_usingPullstring) PullString();
+//#endif
 		}
 	}
 	void CheckNode(const XVECTOR2 pos)
@@ -1011,15 +1057,18 @@ public:
 			return;
 		}
 		int tmpcost = 0;
-#ifdef MANHATTAN
-		tmpcost = ManhattanDistance(pos, m_endPoint);
-#endif
-#ifdef EUCLIDEAN
-		tmpcost = EuclideanDistance(pos, m_endPoint);
-#endif
-#ifdef SQUARESUM
-		tmpcost = XVEC2SqrSum(pos, m_endPoint);
-#endif
+//#ifdef MANHATTAN
+		if (m_activeHeuristic == HEURISTIC::H_MANHATTAN)
+			tmpcost = ManhattanDistance(pos, m_endPoint);
+//#endif
+//#ifdef EUCLIDEAN
+		else if (m_activeHeuristic == HEURISTIC::H_EUCLIDEAN)
+			tmpcost = EuclideanDistance(pos, m_endPoint);
+//#endif
+//#ifdef SQUARESUM
+		else if (m_activeHeuristic == HEURISTIC::H_SQUARESUM)
+			tmpcost = XVEC2SqrSum(pos, m_endPoint);
+//#endif
 		tmpcost +=
 			(m_map->m_grid[pos.x][pos.y]->cost + m_node->m_costsofar);
 		if (m_map->FindTile(pos, TILETYPE::VISITED) && 
@@ -1031,11 +1080,5 @@ public:
 		if (m_map->FindTile(pos, TILETYPE::VISITED)) return;
 		m_map->m_grid[pos.x][pos.y]->Set(TILETYPE::VISITED);
 		m_openList.push(m_map->m_grid[pos.x][pos.y]);
-		//m_openList.push(m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]);
-		//m_map->m_grid[pos.x / TILESIZE][pos.y / TILESIZE]->m_parent = m_node;
-	}
-	void Render(sf::RenderWindow* window)
-	{
-
 	}
 };
