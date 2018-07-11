@@ -30,6 +30,7 @@ struct NodeComparator : public std::binary_function<TileNode*, TileNode*, bool>
 		return leftNode->m_fCost > rightNode->m_fCost;
 	}
 };
+
 class PathFinder
 {
 public:
@@ -37,8 +38,10 @@ public:
 	Map* m_map;
 	XVECTOR2 m_startPoint, m_endPoint;
 	std::vector<TileNode*> m_backtracklist;
+	std::vector<sf::Vertex*> m_finalLines;
 	HEURISTIC m_activeHeuristic = HEURISTIC::H_MANHATTAN;
 	bool m_usingPullstring = false;
+	
 	PathFinder()
 	{
 		m_map = nullptr;
@@ -83,12 +86,23 @@ public:
 	}
 	void Render(sf::RenderWindow* window)
 	{
-
+		
+	}
+	void RenderLines(sf::RenderWindow* window)
+	{
+		if (this->m_map != nullptr)
+		{
+			for (int i = 0; i < m_finalLines.size(); ++i)
+			{
+				window->draw(m_finalLines[i], 2, sf::Lines);
+			}
+		}
 	}
 	void PullString()
 	{
 		std::vector<TileNode*> temp;
 		temp.push_back(m_backtracklist[0]);
+		m_map->m_grid[m_backtracklist[0]->m_tilePosition.x][m_backtracklist[0]->m_tilePosition.y]->m_tile.setFillColor(sf::Color::Black);
 		XVECTOR2 actualpos = m_startPoint;
 		XVECTOR2 newpos;
 		for (int i = 1; i < m_backtracklist.size(); ++i)
@@ -99,14 +113,27 @@ public:
 			if (!Bresenham(actualpos, newpos))
 			{
 				temp.push_back(m_backtracklist[i]);
+				m_map->m_grid[m_backtracklist[i]->m_tilePosition.x][m_backtracklist[i]->m_tilePosition.y]->m_tile.setFillColor(sf::Color::Black);
 				actualpos = m_backtracklist[i]->m_tilePosition;
 			}
 			//else we keep going as if life was good
 		}
-	
-		temp.push_back(m_backtracklist[m_backtracklist.size()-1]);
-		m_backtracklist.clear();
-		m_backtracklist = temp;
+		m_map->m_grid[m_backtracklist[m_backtracklist.size() - 2]->m_tilePosition.x][m_backtracklist[m_backtracklist.size() - 2]->m_tilePosition.y]->m_tile.setFillColor(sf::Color::Black);
+		temp.push_back(m_backtracklist[m_backtracklist.size()-2]);
+		for (int i = 0; i+1 < temp.size(); ++i)
+		{
+			sf::Vertex l[] = { 
+				sf::Vertex(
+					sf::Vector2f(
+						GridtoPixel(temp[i]->m_tilePosition).x,GridtoPixel(temp[i]->m_tilePosition).y),sf::Color::Black ),
+				sf::Vertex(
+					sf::Vector2f(
+						GridtoPixel(temp[i+1]->m_tilePosition).x,GridtoPixel(temp[i+1]->m_tilePosition).y),sf::Color::Black)
+			};
+			m_finalLines.push_back(l);
+		}
+		//m_backtracklist.clear();
+		//m_backtracklist = temp;
 	}
 	bool Bresenham(XVECTOR2 start, XVECTOR2 finish)
 	{

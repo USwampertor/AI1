@@ -267,7 +267,9 @@ void Core::Draw(sf::RenderWindow* window)
 	//	window->draw(obstacle);
 	//}
 	m_gameMap.Render(window);
-	if (m_searching==2) m_pathfinder->RenderPath(window);
+	if (m_searching == 2) 
+	{ m_pathfinder->RenderPath(window); m_pathfinder->RenderLines(window); 
+	};
 }
 bool Core::SetPathfinder()
 {
