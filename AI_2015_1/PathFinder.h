@@ -38,7 +38,7 @@ public:
 	Map* m_map;
 	XVECTOR2 m_startPoint, m_endPoint;
 	std::vector<TileNode*> m_backtracklist;
-	std::vector<sf::Vertex*> m_finalLines;
+	sf::VertexArray m_finalLines;
 	HEURISTIC m_activeHeuristic = HEURISTIC::H_MANHATTAN;
 	bool m_usingPullstring = false;
 	
@@ -92,10 +92,8 @@ public:
 	{
 		if (this->m_map != nullptr)
 		{
-			for (int i = 0; i < m_finalLines.size(); ++i)
-			{
-				window->draw(m_finalLines[i], 2, sf::Lines);
-			}
+				window->draw(m_finalLines);
+			
 		}
 	}
 	void PullString()
@@ -107,31 +105,26 @@ public:
 		XVECTOR2 newpos;
 		for (int i = 1; i < m_backtracklist.size(); ++i)
 		{
-			if ((i + 1) >= m_backtracklist.size()) break;
-			newpos = m_backtracklist[i]->m_tilePosition;
+			if ((i + 2) >= m_backtracklist.size()) break;
+			newpos = m_backtracklist[i+2]->m_tilePosition;
 			//If we cant get from a to b with a straight line, we put i in the temp
 			if (!Bresenham(actualpos, newpos))
 			{
-				temp.push_back(m_backtracklist[i]);
-				m_map->m_grid[m_backtracklist[i]->m_tilePosition.x][m_backtracklist[i]->m_tilePosition.y]->m_tile.setFillColor(sf::Color::Black);
+				temp.push_back(m_backtracklist[i+1]);
+				m_map->m_grid[m_backtracklist[i+1]->m_tilePosition.x][m_backtracklist[i+1]->m_tilePosition.y]->m_tile.setFillColor(sf::Color::Black);
 				actualpos = m_backtracklist[i]->m_tilePosition;
 			}
 			//else we keep going as if life was good
 		}
 		m_map->m_grid[m_backtracklist[m_backtracklist.size() - 2]->m_tilePosition.x][m_backtracklist[m_backtracklist.size() - 2]->m_tilePosition.y]->m_tile.setFillColor(sf::Color::Black);
 		temp.push_back(m_backtracklist[m_backtracklist.size()-2]);
-		for (int i = 0; i+1 < temp.size(); ++i)
+		sf::VertexArray v(sf::LinesStrip, temp.size());
+		for (int i = 0; i < temp.size(); ++i)
 		{
-			sf::Vertex l[] = { 
-				sf::Vertex(
-					sf::Vector2f(
-						GridtoPixel(temp[i]->m_tilePosition).x,GridtoPixel(temp[i]->m_tilePosition).y),sf::Color::Black ),
-				sf::Vertex(
-					sf::Vector2f(
-						GridtoPixel(temp[i+1]->m_tilePosition).x,GridtoPixel(temp[i+1]->m_tilePosition).y),sf::Color::Black)
-			};
-			m_finalLines.push_back(l);
+			v[i].position = sf::Vector2f(GridtoPixel(temp[i]->m_tilePosition).x, GridtoPixel(temp[i]->m_tilePosition).y);
+			v[i].color = sf::Color(100,100,100,255);
 		}
+		m_finalLines = v;
 		//m_backtracklist.clear();
 		//m_backtracklist = temp;
 	}

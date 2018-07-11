@@ -1,97 +1,97 @@
 ﻿  AI_2015_1.cpp
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\tilenode.h(51): warning C4244: 'return': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(105): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(116): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(121): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(156): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(157): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(173): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(174): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(212): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(218): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(353): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(354): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(355): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(390): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(396): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(531): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(532): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(533): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(569): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(575): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(103): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(114): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(119): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(149): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(150): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(166): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(167): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(205): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(211): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(346): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(347): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(348): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(383): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(389): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(524): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(525): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(526): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(562): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(568): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(705): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(706): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(707): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(712): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(713): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(714): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(719): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(720): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(721): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(723): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(724): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(760): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(766): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(908): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(910): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(911): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(912): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(944): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(950): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1093): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1097): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1100): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(716): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(717): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(753): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(759): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(901): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(903): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(904): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(905): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(937): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(943): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1086): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1090): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1093): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1095): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1096): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1097): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1098): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1099): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1101): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1102): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1103): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1104): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1105): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1106): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1108): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1109): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
   Core.cpp
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\tilenode.h(51): warning C4244: 'return': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(105): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(116): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(121): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(156): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(157): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(173): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(174): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(212): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(218): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(353): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(354): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(355): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(390): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(396): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(531): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(532): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(533): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(569): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(575): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(103): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(114): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(119): warning C4244: 'argumento': conversión de 'float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(149): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(150): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(166): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(167): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(205): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(211): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(346): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(347): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(348): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(383): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(389): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(524): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(525): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(526): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(562): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(568): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(705): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(706): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(707): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(712): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(713): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(714): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(719): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(720): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(721): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(723): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(724): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(760): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(766): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(908): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(910): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(911): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(912): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(944): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(950): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1093): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1097): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1100): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(716): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(717): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(753): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(759): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(901): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(903): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(904): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(905): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(937): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(943): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1086): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1090): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1093): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1095): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1096): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1097): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1098): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1099): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1101): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1102): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1103): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1104): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1105): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1106): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1108): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\pathfinder.h(1109): warning C4244: 'argumento': conversión de 'const float' a 'const unsigned __int64'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(183): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(186): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\core.cpp(193): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
