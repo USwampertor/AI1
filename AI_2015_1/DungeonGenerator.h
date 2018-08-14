@@ -1,11 +1,15 @@
 #pragma once
 #include "DungeonRoom.h"
+
 class DungeonGenerator
 {
 private:
-	std::vector<DungeonRoom> m_Rooms;
+	sf::RenderWindow* m_window;
 	XVECTOR2 m_MapSize;
 public:
+	void SetWindow(sf::RenderWindow* w);
+
+	std::vector<DungeonRoom*> m_Rooms;
 	DungeonGenerator();
 	~DungeonGenerator();
 	void SeparateRooms();

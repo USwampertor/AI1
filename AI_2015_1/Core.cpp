@@ -62,15 +62,21 @@ bool Core::Initialize()
 	
 	GenerateAgents();
 	m_dungeonGenerator.SetMapBoundaries(800, 400);
-	m_dungeonGenerator.GenerateDungeon(RANDOMSEED, 5, 6, 10, 8, 100, 20, 4, 5, 6, 6);
 	return true;
 }
 void Core::SFMLWINDOW()
 {
 	sf::RenderWindow window(sf::VideoMode(1000, 400), "AI 2018 B");
 	window.setTitle("Pathfinder");
+	m_dungeonGenerator.SetWindow(&window);
+	bool generated = false;
 	while (window.isOpen())
 	{
+		if (!generated)
+		{
+			m_dungeonGenerator.GenerateDungeon(RANDOMSEED, 2, 3, 15, 13, 100, 100, 4, 5, 6, 6);
+			generated = true;
+		}
 		window.clear();
 		sf::Event event;
 		while (window.pollEvent(event))

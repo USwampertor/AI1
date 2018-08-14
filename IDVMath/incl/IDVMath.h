@@ -469,7 +469,7 @@ struct XQUATERNION {
 };
 
 float Minimum(float a, float b);
-
+float Maximum(float a, float b);
 float XVEC2Angle(XVECTOR2 vector);
 
 float RandomRange(float fmin, float fmax, float seed);

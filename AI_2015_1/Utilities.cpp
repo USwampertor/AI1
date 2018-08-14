@@ -78,11 +78,11 @@ std::vector<XVECTOR2> GenerateRandomPoints(int radius, int seed, int maxPoints)
 		randomRadius = (rand() % radius);
 		angle = (((float)rand()) / (float)RAND_MAX);
 		angle *= (2.0f*PI);
-		std::cout << angle << std::endl;
+		//std::cout << angle << std::endl;
 		x = randomRadius * cos(angle);
 		y = randomRadius * sin(angle);
 		randompoints.push_back(XVECTOR2(x, y));
-		std::cout << x << " " << y << std::endl;
+		//std::cout << x << " " << y << std::endl;
 	}
 	return randompoints;
 }

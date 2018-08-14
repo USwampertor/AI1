@@ -898,6 +898,10 @@ float Minimum(float a, float b)
 {
 	return !(b < a) ? a : b;
 }
+float Maximum(float a, float b)
+{
+	return !(b > a) ? a : b;
+}
 float XVEC2Angle(XVECTOR2 vector)
 {
 	return atan(vector.y / vector.x);
