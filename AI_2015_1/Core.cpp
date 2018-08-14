@@ -56,7 +56,13 @@ bool Core::Initialize()
 	m_pullstringRectangle.setSize(sf::Vector2f(TILESIZE, TILESIZE));
 	m_pullstringRectangle.setFillColor(sf::Color::Black);
 	m_pullstringRectangle.setPosition(sf::Vector2f(820, 100));
+	
+	
 	m_pathfinder = nullptr;
+	
+	GenerateAgents();
+	m_dungeonGenerator.SetMapBoundaries(800, 400);
+	m_dungeonGenerator.GenerateDungeon(RANDOMSEED, 5, 6, 10, 8, 100, 20, 4, 5, 6, 6);
 	return true;
 }
 void Core::SFMLWINDOW()
@@ -72,6 +78,7 @@ void Core::SFMLWINDOW()
 			EventHandler(&window, event);
 		}
 		if(m_searching==1)SearchnDestroy(&window);
+		UpdateAgents();
 		Draw(&window);
 		window.display();
 	}
@@ -248,6 +255,7 @@ void Core::Draw(sf::RenderWindow* window)
 	window->draw(m_endingRectangle);
 	window->draw(m_heuristicRectangle);
 	window->draw(m_pullstringRectangle);
+	
 	//sf::RectangleShape beggining(sf::Vector2f(10, 10));
 	//beggining.setPosition(IDVtoSFML(m_gameMap.GetBeggining()));
 	//beggining.setFillColor(sf::Color::Blue);
@@ -266,10 +274,16 @@ void Core::Draw(sf::RenderWindow* window)
 	//	obstacle.setFillColor(sf::Color::White);
 	//	window->draw(obstacle);
 	//}
-	m_gameMap.Render(window);
+
+	//m_gameMap.Render(window);
 	if (m_searching == 2) 
 	{ m_pathfinder->RenderPath(window); m_pathfinder->RenderLines(window); 
 	};
+	for (int i = 0; i < m_totalAgents.size(); ++i)
+	{
+		window->draw(m_totalAgents[i].m_body);
+	}
+	m_dungeonGenerator.Render(window);
 }
 bool Core::SetPathfinder()
 {
@@ -323,4 +337,26 @@ void Core::SearchnDestroy(sf::RenderWindow* window)
 	m_pathfinder->Search(window);
 	m_selectedPathfinder.setString("--FINAL--");
 	m_searching = 2;
+}
+void Core::GenerateAgents()
+{
+	Boid2D objective = { "objective",400,200,AGENTICIRCLE,AGENTOCIRCLE,0.0f };
+	for (int i = 0; i < DEBUGAGENTS; ++i)
+	{
+		char a[4] ; _itoa_s(i,a,10 );
+		Boid2D agent = { a ,20.0f * i,10.0f,AGENTICIRCLE,AGENTOCIRCLE,1.0f };
+		agent.m_EnemyPosition = objective.m_position2d;
+		m_totalAgents.push_back(agent);
+	}
+}
+void Core::UpdateAgents()
+{
+	for (int i = 0; i < m_totalAgents.size(); ++i)
+	{
+		m_totalAgents[i].Update();
+		//std::cout 
+		//	<< "Agent " << i << " " << 
+		//	m_totalAgents[i].m_position2d.x << " " << 
+		//	m_totalAgents[i].m_position2d.y << std::endl;
+	}
 }
