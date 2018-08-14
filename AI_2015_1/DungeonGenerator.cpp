@@ -26,26 +26,32 @@ void DungeonGenerator::SeparateRooms()
 		m_Rooms[i]->m_neighborRooms = m_Rooms;
 	}
 
-	XVECTOR2 totalSum = { 0,0 };
-	float tLength = 0.0f;
+	//XVECTOR2 totalSum = { 0,0 };
+	float tLength = 1.5f, separationforce = 0.0f;
+	int roomsSeparating = 0;
 	do
 	{
-		totalSum = { 0,0 };
+		//system("cls");
+		//totalSum = { 0,0 };
+		roomsSeparating = 0;
 		for (int i = 0; i < m_Rooms.size(); ++i)
 		{
 			m_Rooms[i]->Update();
-			totalSum += m_Rooms[i]->m_lastForce;
+			//totalSum += m_Rooms[i]->m_lastForce;
+			separationforce = m_Rooms[i]->m_lastForce.Length();
+			std::cout << separationforce << std::endl;
+			if (separationforce > tLength)
+				++roomsSeparating;
 			//m_window->draw(m_Rooms[i]->m_mapDisplay);
 		}
-		
-		tLength = totalSum.Length();
-	} while (tLength > 1.0f);
+		//tLength = totalSum.Length();
+	} while (roomsSeparating>100);
 
 	
 }
 void DungeonGenerator::SetMapBoundaries(int width, int height)
 {
-	m_MapSize = XVECTOR2(width, height);
+	m_MapCenter = XVECTOR2(width/2.0f, height/2.0f);
 }
 void DungeonGenerator::GenerateDungeon(
 	int seed,
@@ -65,13 +71,13 @@ void DungeonGenerator::GenerateDungeon(
 	srand(seed);
 	for (int i = 0; i< randomPoints.size(); ++i)
 	{
-		randomPoints[i].x += (m_MapSize.x / 2);
-		randomPoints[i].y += (m_MapSize.y / 2);
+		randomPoints[i].x += m_MapCenter.x;
+		randomPoints[i].y += m_MapCenter.y;
 		DungeonRoom* room = new DungeonRoom(
 			rand(),
 			randomPoints[i],
 			(minWidth + (rand() % (int)(maxWidth - minWidth + 1)))*TILESIZE,
-			(minHeight + (rand() % (int)(maxHeight - minHeight + 1)))*TILESIZE );
+			(minHeight + (rand() % (int)(maxHeight - minHeight + 1)))*TILESIZE);
 		//std::cout << room->m_position2d.x << " " << room->m_position2d.y << std::endl;
 		m_Rooms.push_back(room);
 	}
@@ -86,5 +92,6 @@ void DungeonGenerator::Render(sf::RenderWindow* window)
 	for (int i = 0; i < m_Rooms.size(); ++i)
 	{
 		window->draw((m_Rooms[i])->m_mapDisplay);
+		window->draw((m_Rooms[i])->m_centerCircle);
 	}
 }

@@ -5,7 +5,7 @@ class DungeonGenerator
 {
 private:
 	sf::RenderWindow* m_window;
-	XVECTOR2 m_MapSize;
+	XVECTOR2 m_MapCenter;
 public:
 	void SetWindow(sf::RenderWindow* w);
 

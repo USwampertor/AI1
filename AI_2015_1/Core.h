@@ -10,6 +10,7 @@ class Core
 {
 private:
 	DungeonGenerator m_dungeonGenerator;
+	sf::View m_cameraView;
 	sf::Font m_font;
 	sf::Text m_selectedPathfinder, m_startingPoint, m_endingPoint,m_heuristicText,m_pullstringText;
 	sf::RectangleShape m_startRectangle, m_endingRectangle,m_heuristicRectangle,m_pullstringRectangle;
@@ -34,6 +35,7 @@ public:
 	void SearchnDestroy(sf::RenderWindow* window);
 	void GenerateAgents();
 	void UpdateAgents();
+	void MouseScrolled(sf::Event event);
 	//MOVED THEM TO UTILITIES
 };
 

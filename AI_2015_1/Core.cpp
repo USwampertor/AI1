@@ -60,13 +60,14 @@ bool Core::Initialize()
 	
 	m_pathfinder = nullptr;
 	
-	GenerateAgents();
+	//GenerateAgents();
 	m_dungeonGenerator.SetMapBoundaries(800, 400);
 	return true;
 }
 void Core::SFMLWINDOW()
 {
-	sf::RenderWindow window(sf::VideoMode(1000, 400), "AI 2018 B");
+	sf::RenderWindow window(sf::VideoMode(1000.0f, 400.0f), "AI 2018 B");
+	m_cameraView = { sf::Vector2f(400.0f,200.0f) ,sf::Vector2f(1000.0f,400.0f) };
 	window.setTitle("Pathfinder");
 	m_dungeonGenerator.SetWindow(&window);
 	bool generated = false;
@@ -74,7 +75,7 @@ void Core::SFMLWINDOW()
 	{
 		if (!generated)
 		{
-			m_dungeonGenerator.GenerateDungeon(RANDOMSEED, 2, 3, 15, 13, 100, 100, 4, 5, 6, 6);
+			m_dungeonGenerator.GenerateDungeon(RANDOMSEED, 1, 2, 10, 8, 100, 150, 4, 5, 6, 6);
 			generated = true;
 		}
 		window.clear();
@@ -84,8 +85,10 @@ void Core::SFMLWINDOW()
 			EventHandler(&window, event);
 		}
 		if(m_searching==1)SearchnDestroy(&window);
-		UpdateAgents();
+		//UpdateAgents();
+		window.setView(m_cameraView);
 		Draw(&window);
+		//m_cameraView.rotate(5);
 		window.display();
 	}
 }
@@ -106,14 +109,45 @@ void Core::EventHandler(sf::RenderWindow* window, sf::Event event)
 	case sf::Event::MouseButtonPressed:
 		MouseEventHandler(event);
 		break;
+	case sf::Event::MouseWheelScrolled:
+		MouseScrolled(event);
+		break;
 	}
 	if (m_close)
 	{
 		window->close();
 	}
 }
+void Core::MouseScrolled(sf::Event event)
+{
+	if (event.mouseWheelScroll.delta < 0.0f)
+	{
+		m_cameraView.zoom(0.9f);
+	}
+	if (event.mouseWheelScroll.delta > 0.0f)
+	{
+		m_cameraView.zoom(1.1f);
+	}
+}
 void Core::KeyBoardEventHander(sf::Event event)
 {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		//m_cameraView.setCenter(m_cameraView.getCenter());
+		m_cameraView.move(0.0f, 10.0f);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		m_cameraView.move(-10.0f, 0.0f);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		m_cameraView.move(0.0f, -10.0f);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		m_cameraView.move(10.0f, 0.0f);
+	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
 	{
 		std::cout << "Changed to Breadth FS algorithm \n";

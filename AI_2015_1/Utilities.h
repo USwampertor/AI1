@@ -13,7 +13,7 @@
 #define AGENTSIZE 5.0f
 
 
-#define TILESIZE 5
+#define TILESIZE 10
 #define OBSTACLECOST 9999999
 #define PI 3.14159
 #define MAXPOINTS 50

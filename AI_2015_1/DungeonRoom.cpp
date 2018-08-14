@@ -14,15 +14,24 @@ DungeonRoom::~DungeonRoom()
 DungeonRoom::DungeonRoom(int id, XVECTOR2 position, int width, int height)
 {
 	m_ID = id;
-	m_position2d = position;
+	m_position2d.x = (int)position.x - (int)position.x % TILESIZE;
+	m_position2d.y = (int)position.y - (int)position.y % TILESIZE;
 	m_width = width;
 	m_height = height;
 	SetRectangle();
+	m_centerCircle.setRadius(2.5f);
+	m_centerCircle.setFillColor(sf::Color::Yellow);
+	m_centerCircle.setPosition(IDVtoSFML(m_roomCenter - XVECTOR2(2.5f, 2.5f)));
 }
 void DungeonRoom::Update()
 {
 	m_position2d += Distance();
+	//m_position2d.x = (int)m_position2d.x - (int)m_position2d.x % TILESIZE;
+	//m_position2d.y = (int)m_position2d.y - (int)m_position2d.y % TILESIZE;
+	SetCenter();
 	m_mapDisplay.setPosition(IDVtoSFML(m_position2d));
+	m_centerCircle.setPosition(IDVtoSFML(m_roomCenter - XVECTOR2(2.5f, 2.5f)));
+
 }
 void DungeonRoom::SetRectangle()
 {
@@ -32,6 +41,12 @@ void DungeonRoom::SetRectangle()
 	m_mapDisplay.setOutlineColor(sf::Color::White);
 	m_mapDisplay.setPosition(IDVtoSFML(m_position2d));
 	m_roomRadius = Maximum(m_width, m_height);
+	SetCenter();
+}
+void DungeonRoom::SetCenter()
+{
+	m_roomCenter.x = m_position2d.x + m_width / 2;
+	m_roomCenter.y = m_position2d.y + m_height / 2;
 }
 void DungeonRoom::GetList(std::vector<DungeonRoom*> neighbors)
 {
@@ -43,12 +58,12 @@ XVECTOR2 DungeonRoom::Distance()
 	XVECTOR2 vGeneralAvoidance = { 0,0 };
 	for each(DungeonRoom* room in m_neighborRooms)
 	{
-		float roomdistance = (room->m_position2d - m_position2d).Length();
+		float roomdistance = (room->m_roomCenter - m_roomCenter).Length();
 
-		if ((room->m_position2d - m_position2d).Length() != 0 &&
-			(room->m_position2d - m_position2d).Length() < m_roomRadius)
+		if ((room->m_roomCenter - m_roomCenter).Length() != 0 &&
+			(room->m_roomCenter - m_roomCenter).Length() < m_roomRadius)
 		{
-			vGeneralAvoidance += (room->m_position2d - m_position2d);
+			vGeneralAvoidance += (room->m_roomCenter - m_roomCenter);
 			++iNeighBorRooms;
 		}
 	}
