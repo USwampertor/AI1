@@ -25,13 +25,35 @@ DungeonRoom::DungeonRoom(int id, XVECTOR2 position, int width, int height)
 }
 void DungeonRoom::Update()
 {
-	m_position2d += Distance();
+	
 	//m_position2d.x = (int)m_position2d.x - (int)m_position2d.x % TILESIZE;
 	//m_position2d.y = (int)m_position2d.y - (int)m_position2d.y % TILESIZE;
-	SetCenter();
-	m_mapDisplay.setPosition(IDVtoSFML(m_position2d));
-	m_centerCircle.setPosition(IDVtoSFML(m_roomCenter - XVECTOR2(2.5f, 2.5f)));
+	
 
+}
+void DungeonRoom::SetRoom()
+{
+	m_mapDisplay.setPosition(IDVtoSFML(m_position2d));
+	SetCenter();
+	m_centerCircle.setPosition(IDVtoSFML(m_roomCenter - XVECTOR2(2.5f, 2.5f)));
+}
+bool DungeonRoom::isColliding(std::vector<DungeonRoom*> neighbors)
+{
+	for (int i = 0; i < neighbors.size(); ++i)
+	{
+		if (neighbors[i]->m_ID != m_ID)
+		{
+			if (
+				((neighbors[i]->m_position2d.x > m_position2d.x && neighbors[i]->m_position2d.x < m_position2d.x + m_width) ||
+				(neighbors[i]->m_position2d.x + neighbors[i]->m_width > m_position2d.x && neighbors[i]->m_position2d.x < m_position2d.x)) &&
+				((neighbors[i]->m_position2d.y > m_position2d.y && neighbors[i]->m_position2d.y < m_position2d.y + m_height) ||
+				(neighbors[i]->m_position2d.y + neighbors[i]->m_height > m_position2d.y && neighbors[i]->m_position2d.y < m_position2d.y)))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 void DungeonRoom::SetRectangle()
 {
@@ -60,8 +82,11 @@ XVECTOR2 DungeonRoom::Distance()
 	{
 		float roomdistance = (room->m_roomCenter - m_roomCenter).Length();
 
-		if ((room->m_roomCenter - m_roomCenter).Length() != 0 &&
-			(room->m_roomCenter - m_roomCenter).Length() < m_roomRadius)
+		//if ((int)(room->m_roomCenter - m_roomCenter).Length() != 0 &&
+		//	(room->m_roomCenter - m_roomCenter).Length() < m_roomRadius)
+		if (
+		((room->m_position2d.x > m_position2d.x && room->m_position2d.x < m_position2d.x + m_width)  || (room->m_position2d.x + room->m_width > m_position2d.x  && room->m_position2d.x < m_position2d.x)) &&
+		((room->m_position2d.y > m_position2d.y && room->m_position2d.y < m_position2d.y + m_height) || (room->m_position2d.y + room->m_height > m_position2d.y && room->m_position2d.y < m_position2d.y)))
 		{
 			vGeneralAvoidance += (room->m_roomCenter - m_roomCenter);
 			++iNeighBorRooms;
@@ -76,4 +101,12 @@ XVECTOR2 DungeonRoom::Distance()
 	}
 	m_lastForce = vGeneralAvoidance;
 	return vGeneralAvoidance;
+}
+int DungeonRoom::GetWidth()
+{
+	return m_width;
+}
+int DungeonRoom::GetHeight()
+{
+	return m_height;
 }

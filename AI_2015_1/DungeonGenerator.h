@@ -10,10 +10,15 @@ public:
 	void SetWindow(sf::RenderWindow* w);
 
 	std::vector<DungeonRoom*> m_Rooms;
+	std::vector<DungeonRoom*> m_SelectedRooms;
 	DungeonGenerator();
 	~DungeonGenerator();
 	void SeparateRooms();
-	void GenerateRooms(std::vector<XVECTOR2> pointLists);
+	void SelectRooms(
+		int minHeightSelect,
+		int maxHeightSelect,
+		int minWidthSelect,
+		int maxWidthSelect);
 	void GenerateDungeon(
 		int seed,
 		int minHeight,

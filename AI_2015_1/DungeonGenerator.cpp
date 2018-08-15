@@ -34,20 +34,21 @@ void DungeonGenerator::SeparateRooms()
 		//system("cls");
 		//totalSum = { 0,0 };
 		roomsSeparating = 0;
-		for (int i = 0; i < m_Rooms.size(); ++i)
+		for (const auto& room : m_Rooms)
 		{
-			m_Rooms[i]->Update();
-			//totalSum += m_Rooms[i]->m_lastForce;
-			separationforce = m_Rooms[i]->m_lastForce.Length();
-			std::cout << separationforce << std::endl;
-			if (separationforce > tLength)
+			if (room->isColliding(m_Rooms))
+			{
+				room->m_position2d += room->Distance();
+				room->SetRoom();
 				++roomsSeparating;
+			}
+			//separationforce = m_Rooms[i]->m_lastForce.Length();
+			//std::cout << separationforce << std::endl;
+			//if (separationforce > tLength)
 			//m_window->draw(m_Rooms[i]->m_mapDisplay);
 		}
 		//tLength = totalSum.Length();
-	} while (roomsSeparating>100);
-
-	
+	} while (roomsSeparating != 0);
 }
 void DungeonGenerator::SetMapBoundaries(int width, int height)
 {
@@ -78,14 +79,37 @@ void DungeonGenerator::GenerateDungeon(
 			randomPoints[i],
 			(minWidth + (rand() % (int)(maxWidth - minWidth + 1)))*TILESIZE,
 			(minHeight + (rand() % (int)(maxHeight - minHeight + 1)))*TILESIZE);
-		//std::cout << room->m_position2d.x << " " << room->m_position2d.y << std::endl;
+		
+		
 		m_Rooms.push_back(room);
 	}
-	SeparateRooms();
-}
-void DungeonGenerator::GenerateRooms(std::vector<XVECTOR2> pointLists)
-{
 
+	SeparateRooms();
+	SelectRooms(minHeightselect, maxHeightSelect, minWidthSelect, maxWidthSelect);
+	//Here we should do Delaunay and Divide and conquer
+
+	//Here we should min Spanning Tree with .8 threshold
+
+	//And ta da
+	//We have the graph of the dungeon
+}
+void DungeonGenerator::SelectRooms(
+	int minHeightSelect, 
+	int maxHeightSelect,
+	int minWidthSelect,
+	int maxWidthSelect)
+{
+	for (int index = 0; index < m_Rooms.size(); ++index)
+	{
+		if ((m_Rooms[index]->GetHeight() < maxHeightSelect  &&
+			 m_Rooms[index]->GetWidth()  < maxWidthSelect) &&
+			(m_Rooms[index]->GetHeight() > minHeightSelect  &&
+			 m_Rooms[index]->GetWidth()  > minWidthSelect))
+		{
+			m_Rooms[index]->m_mapDisplay.setFillColor(sf::Color::Red);
+			m_SelectedRooms.push_back(m_Rooms[index]);
+		}
+	}
 }
 void DungeonGenerator::Render(sf::RenderWindow* window)
 {

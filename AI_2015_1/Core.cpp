@@ -75,7 +75,7 @@ void Core::SFMLWINDOW()
 	{
 		if (!generated)
 		{
-			m_dungeonGenerator.GenerateDungeon(RANDOMSEED, 1, 2, 10, 8, 100, 150, 4, 5, 6, 6);
+			m_dungeonGenerator.GenerateDungeon(RANDOMSEED, 1, 2, 10, 8, 100, 150, 30, 500, 50, 1000);
 			generated = true;
 		}
 		window.clear();
