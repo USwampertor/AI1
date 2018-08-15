@@ -130,8 +130,8 @@ c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\t
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\utilities.cpp(19): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\utilities.cpp(20): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
 c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\utilities.cpp(38): warning C4244: 'return': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\utilities.cpp(78): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\utilities.cpp(80): warning C4305: '*=': truncamiento de 'double' a 'float'
-c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\utilities.cpp(84): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\utilities.cpp(75): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\utilities.cpp(77): warning C4305: '*=': truncamiento de 'double' a 'float'
+c:\users\propietario\documents\visual studio 2015\projects\ai_2015_1\ai_2015_1\utilities.cpp(81): warning C4244: 'argumento': conversión de 'int' a 'const float'; posible pérdida de datos
   Generando código...
   AI_2015_1.vcxproj -> C:\Users\PROPIETARIO\Documents\Visual Studio 2015\Projects\AI_2015_1\Bin\AI_2015_1.exe

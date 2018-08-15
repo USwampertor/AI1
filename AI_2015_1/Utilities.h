@@ -37,6 +37,5 @@ int PtoG(int pixel);
 sf::String ReturnString(XVECTOR2 vec);
 int ManhattanDistance(XVECTOR2 start, XVECTOR2 finish);
 float EuclideanDistance(XVECTOR2 start, XVECTOR2 finish);
-void DelaunayTriangulation(std::vector<XVECTOR2> sortedPoints);
 void SortPoints(std::vector<XVECTOR2> unsortedPoints);
 std::vector<XVECTOR2> GenerateRandomPoints(int radius, int seed, int maxPoints);

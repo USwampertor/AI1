@@ -43,10 +43,7 @@ float EuclideanDistance(XVECTOR2 start, XVECTOR2 finish)
 		((finish.x - start.x)*(finish.x - start.x) + 
 		(finish.y - start.y)*(finish.y - start.y)));
 }
-void DelaunayTriangulation(std::vector<XVECTOR2> sortedPoints)
-{
 
-}
 void SortPoints(std::vector<XVECTOR2> unsortedPoints)
 {
 	std::priority_queue<XVECTOR2, std::vector<XVECTOR2>, VectorComparator> sortedqueue;

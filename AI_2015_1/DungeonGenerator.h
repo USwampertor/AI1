@@ -1,6 +1,6 @@
 #pragma once
 #include "DungeonRoom.h"
-
+#include "Triangle.h"
 class DungeonGenerator
 {
 private:
@@ -11,6 +11,8 @@ public:
 
 	std::vector<DungeonRoom*> m_Rooms;
 	std::vector<DungeonRoom*> m_SelectedRooms;
+	std::vector<XVECTOR2> m_selectedPoints;
+	std::vector<Connection> m_finalConnections;
 	DungeonGenerator();
 	~DungeonGenerator();
 	void SeparateRooms();
@@ -33,6 +35,6 @@ public:
 		int maxWidthSelect);
 	void Render(sf::RenderWindow* window);
 	void SetMapBoundaries(int width, int height);
-
+	void DelaunayTriangulation(std::vector<XVECTOR2> sortedPoints);
 };
 

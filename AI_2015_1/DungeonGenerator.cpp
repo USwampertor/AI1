@@ -86,6 +86,11 @@ void DungeonGenerator::GenerateDungeon(
 
 	SeparateRooms();
 	SelectRooms(minHeightselect, maxHeightSelect, minWidthSelect, maxWidthSelect);
+	for (int i = 0; i < m_SelectedRooms.size(); ++i)
+	{
+		m_selectedPoints.push_back(m_SelectedRooms[i]->m_roomCenter);
+	}
+	DelaunayTriangulation(m_selectedPoints);
 	//Here we should do Delaunay and Divide and conquer
 
 	//Here we should min Spanning Tree with .8 threshold
@@ -118,4 +123,8 @@ void DungeonGenerator::Render(sf::RenderWindow* window)
 		window->draw((m_Rooms[i])->m_mapDisplay);
 		window->draw((m_Rooms[i])->m_centerCircle);
 	}
+}
+void DungeonGenerator::DelaunayTriangulation(std::vector<XVECTOR2> sortedPoints)
+{
+	SortPoints(sortedPoints);
 }
